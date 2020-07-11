@@ -2,7 +2,7 @@
 
 ## Why use
 
-- Sticking to the React spirit, by having each component have its own set of translations, instead of declaring them in a global `locales` folder. (this has a downside however, read the first point in: "Why not use")
+- In the spirit of React, each component has its own set of translations, instead of declaring them in a global `locales` folder.
 
 - Fully dynamic translations
 
@@ -10,7 +10,7 @@
 
 ## Why not use
 
-- Components will load all the translations **only** during runtime. They will however be cached using a stale while revalidate cache strategy (using Vercel's [SWR lib](https://github.com/vercel/swr)), so that only the first load will result in a delay.
+- Components will load all the translations **only** on the client. They will however be cached using a stale while revalidate cache strategy (using Vercel's [SWR lib](https://github.com/vercel/swr)), so that only the first load will result in a delay.
 
 - If you don't want to maintain the all the i18n logic yourself.
 
