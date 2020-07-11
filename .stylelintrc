@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "stylelint-config-recommended",
+    "stylelint-config-standard",
+    "stylelint-config-css-modules"
+  ],
+  "plugins": [
+    "stylelint-no-unsupported-browser-features"
+  ],
+  "rules": {
+    "plugin/no-unsupported-browser-features": [true, {
+      "severity": "warning"
+    }]
+  }
+}

@@ -1,0 +1,5 @@
+[build]
+  command = "npm run build && npm run export"
+  publish = "out"
+[build.environment]
+  NODE_VERSION = "12.16.3"
