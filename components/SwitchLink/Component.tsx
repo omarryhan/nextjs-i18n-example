@@ -1,18 +1,20 @@
 import React from 'react';
 import Link from 'next/link';
-import useSWR from 'swr';
 import styles from './styles.css';
 import { useI18n } from '../../utils/i18n';
 
 const Component: React.FC = () => {
-  const { language, config } = useI18n();
+  const {
+    translations, isLoading, config,
+  } = useI18n('SwitchLink');
 
-  const { data } = useSWR(
-    `Components/SwitchLink/translations/${language}`,
-    async (_) => await import(`./translations/${language}.json`),
-  );
-
-  const translations = data || {};
+  if (isLoading) {
+    return (
+      <h1>
+        Loading translations...
+      </h1>
+    );
+  }
 
   return (
     <Link href={`/${config.prefix === 'en' ? 'ar' : 'en'}`}>

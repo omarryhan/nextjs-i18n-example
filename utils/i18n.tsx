@@ -1,5 +1,6 @@
 import React from 'react';
 import { NextPage } from 'next';
+import useSWR from 'swr';
 import config from '../i18n.config';
 
 const { allLanguages, defaultLanguage } = config;
@@ -35,14 +36,26 @@ const getLanguageFromURL = (): AvailableLanguage | undefined => {
   return undefined;
 };
 
-export const useI18n = (): {
+export const useI18n = (path: string): {
   language: AvailableLanguage,
-  config: typeof defaultLanguage
+  config: typeof defaultLanguage,
+  translations: { [key: string]: any },
+  isLoading: boolean,
+  error: any,
 } => {
   const { language } = React.useContext(I18nContext);
+
+  const { data, error } = useSWR(
+    `/translations/${path}/${language}.json`,
+    async (translationsPath) => (await fetch(translationsPath)).json(),
+  );
+
   return {
     language,
     config: allLanguages[language],
+    isLoading: typeof data === 'undefined',
+    translations: data || {},
+    error,
   };
 };
 

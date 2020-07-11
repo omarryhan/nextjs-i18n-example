@@ -1,17 +1,19 @@
 import React from 'react';
 import Router from 'next/router';
-import useSWR from 'swr';
 import { useI18n } from '../../utils/i18n';
 
 const Component: React.FC = () => {
-  const { language, config } = useI18n();
+  const {
+    translations, isLoading, config,
+  } = useI18n('SwitchButton');
 
-  const { data } = useSWR(
-    `Components/SwitchButton/translations/${language}`,
-    async (_) => await import(`./translations/${language}.json`),
-  );
-
-  const translations = data || {};
+  if (isLoading) {
+    return (
+      <h1>
+        Loading translations...
+      </h1>
+    );
+  }
 
   return (
     <button

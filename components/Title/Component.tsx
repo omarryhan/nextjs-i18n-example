@@ -1,16 +1,18 @@
 import React from 'react';
-import useSWR from 'swr';
 import { useI18n } from '../../utils/i18n';
 
 const Component: React.FC = () => {
-  const { language, config } = useI18n();
+  const {
+    language, translations, isLoading, config,
+  } = useI18n('Title');
 
-  const { data } = useSWR(
-    `Components/Title/translations/${language}`,
-    async (_) => await import(`./translations/${language}.json`),
-  );
-
-  const translations = data || {};
+  if (isLoading) {
+    return (
+      <h1>
+        Loading translations...
+      </h1>
+    );
+  }
 
   return (
     <div>
@@ -25,7 +27,9 @@ const Component: React.FC = () => {
       <p>
         {translations.prefix_description}
         {' '}
-        {config.prefix}
+
+        {/* Same */}
+        {config.prefix || language}
       </p>
     </div>
   );
