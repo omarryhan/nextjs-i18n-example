@@ -1,4 +1,4 @@
-# Next.JS i18n Example
+# Next.JS i18n Example (Experimental)
 
 ## Why use
 
