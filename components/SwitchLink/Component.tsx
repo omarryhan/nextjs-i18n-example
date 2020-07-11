@@ -8,8 +8,8 @@ const Component: React.FC = () => {
   const { language, config } = useI18n();
 
   const { data } = useSWR(
-    'Components/SwitchLink/translations',
-    async () => await import(`./translations/${language}.json`),
+    `Components/SwitchLink/translations/${language}`,
+    async (_) => await import(`./translations/${language}.json`),
   );
 
   const translations = data || {};
