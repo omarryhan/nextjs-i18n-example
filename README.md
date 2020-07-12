@@ -18,6 +18,37 @@
 
 ## Files
 
+### 0. `i18n.config.ts`
+
+Example config:
+
+```TS
+const allLanguages: Config = {
+  en: {
+    name: 'English',
+    prefix: 'en',
+  },
+  ar: {
+    name: 'العربية',
+    prefix: 'ar',
+    direction: 'rtl',
+  },
+};
+
+const defaultLanguage: Language = allLanguages.en;
+
+const domains: Domains = {
+  development: 'http://localhost:3000',
+  production: 'https://https://next-i18n-dynamic.netlify.app',
+};
+
+export default {
+  allLanguages,
+  defaultLanguage,
+  domains
+}
+```
+
 ### 1. `pages/_document.tsx`
 
 Is only there to add the `lang` property in the `html` tag. Note: due to a limitation of Next.JS, the lang property won't change during client side language transitions because the document object is only rendered on the server.
@@ -86,37 +117,6 @@ Strips the language directory prefix from `window.location.pathname` and returns
 #### `getLanguageFromURL`
 
 Opposite of `changeDocumentLanguage`. Strips the language prefix from `window.location.pathname` and returns it. Only works on the browser
-
-### 4. `i18n.config.ts`
-
-Example config:
-
-```TS
-const allLanguages: Config = {
-  en: {
-    name: 'English',
-    prefix: 'en',
-  },
-  ar: {
-    name: 'العربية',
-    prefix: 'ar',
-    direction: 'rtl',
-  },
-};
-
-const defaultLanguage: Language = allLanguages.en;
-
-const domains: Domains = {
-  development: 'http://localhost:3000',
-  production: 'https://https://next-i18n-dynamic.netlify.app',
-};
-
-export default {
-  allLanguages,
-  defaultLanguage,
-  domains
-}
-```
 
 ## Notes
 
