@@ -20,7 +20,7 @@ const Component: React.FC = () => {
   }
 
   return (
-    <Link language={config.prefix === 'en' ? 'ar' : `en${getI18nAgnosticPathname()}`}>
+    <Link language={config.prefix === 'en' ? 'ar' : 'en'}>
       {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
       <a className={styles.link}>
         {translations.name}

@@ -142,6 +142,29 @@ interface LinkProps extends Partial<NextLinkProps> {
   as?: string;
 }
 
+/*
+only works in the browser, where `window` is defined
+*/
+export const getI18nAgnosticPathname = (): string => {
+  if (typeof window !== 'undefined') {
+    const { pathname } = window.location;
+    const paths = pathname.split('/');
+    const mightBePrefix = paths[1];
+
+    const allPrefixes = Object.values(allLanguages).map((lang) => lang.prefix);
+
+    const isPrefix = allPrefixes.some((prefix) => prefix === mightBePrefix);
+
+    if (isPrefix) {
+      paths.splice(1, 1);
+    }
+
+    return paths.join('/');
+  }
+
+  return '';
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const Link: React.FC<LinkProps> = ({
   children, href = '', as = '', language, noLanguage = false, ...props
@@ -167,34 +190,11 @@ export const Link: React.FC<LinkProps> = ({
   // TODO: Fix it. Check: https://github.com/vinissimus/next-translate/blob/master/src/fixAs.js
   return (
     <NextLink
-      href={noLanguage ? href : `/${finalLanguage}${href}`}
-      as={noLanguage ? as || href : `/${finalLanguage}${as || href}`}
+      href={noLanguage ? href : `/${finalLanguage}${href || getI18nAgnosticPathname()}`}
+      as={noLanguage ? as || href : `/${finalLanguage}${as || href || getI18nAgnosticPathname()}`}
       {...props}
     >
       {React.cloneElement(child, { onClick })}
     </NextLink>
   );
-};
-
-/*
-only works in the browser, where `window` is defined
-*/
-export const getI18nAgnosticPathname = (): string => {
-  if (typeof window !== 'undefined') {
-    const { pathname } = window.location;
-    const paths = pathname.split('/');
-    const mightBePrefix = paths[1];
-
-    const allPrefixes = Object.values(allLanguages).map((lang) => lang.prefix);
-
-    const isPrefix = allPrefixes.some((prefix) => prefix === mightBePrefix);
-
-    if (isPrefix) {
-      paths.splice(1, 1);
-    }
-
-    return paths.join('/');
-  }
-
-  return '';
 };
