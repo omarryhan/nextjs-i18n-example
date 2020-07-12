@@ -9,8 +9,8 @@ import Head from 'next/head';
 import {
   getI18nStaticPaths,
   withI18n,
-  getI18nStaticProps,
-  GetI18nStaticProps,
+  getI18nProps,
+  GetI18nProps,
 } from '../../utils/i18n';
 import Title from '../../components/Title';
 import SwtitchLink from '../../components/SwitchLink';
@@ -28,21 +28,21 @@ const Page: NextPage = () => (
   </>
 );
 
-export const getStaticPaths: GetStaticPaths<GetI18nStaticProps> = async () => ({
+export const getStaticPaths: GetStaticPaths<GetI18nProps> = async () => ({
   paths: getI18nStaticPaths(),
   fallback: false,
 });
 
-export const getStaticProps: GetStaticProps<GetI18nStaticProps, GetI18nStaticProps> = async ({
+export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nProps> = async ({
   params,
 }) => ({
-  props: getI18nStaticProps(params?.language),
+  props: getI18nProps(params?.language),
 });
 
 // export const getServerSideProps: GetServerSideProps<
-// GetI18nStaticProps, GetI18nStaticProps
+// GetI18nProps, GetI18nProps
 // > = async ({ params }) => ({
-//   props: getI18nStaticProps(params?.language),
+//   props: getI18nProps(params?.language),
 // });
 
 export default withI18n(Page, '/page-2s');

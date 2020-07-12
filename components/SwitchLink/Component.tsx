@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './styles.css';
 import {
-  useI18n, withPrefetchTranslations, Link, getI18nAgnosticPathname,
+  useI18n, withPrefetchTranslations, Link,
 } from '../../utils/i18n';
 
 const TranslationsPath = 'SwitchLink';

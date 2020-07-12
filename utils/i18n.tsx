@@ -11,32 +11,27 @@ const { allLanguages, defaultLanguage, domains } = config;
 type AvailableLanguages = string[];
 type AvailableLanguage = string;
 
-export interface GetI18nStaticProps {
+export interface GetI18nProps {
   // language: AvailableLanguage;
   [key: string]: string;
 }
 
 interface GetI18nStaticPaths {
-  params: GetI18nStaticProps;
+  params: GetI18nProps;
+}
+
+// Partial to make href and as optional
+// in case you just want to switch the language
+interface LinkProps extends Partial<NextLinkProps> {
+  language?: string;
+  href?: string;
+  as?: string;
 }
 
 const I18nContext = React.createContext({
   language: defaultLanguage.prefix,
   config: defaultLanguage,
 });
-
-const getLanguageFromURL = (): AvailableLanguage | undefined => {
-  if (typeof window !== 'undefined') {
-    const language = window.location.pathname.split('/')[1];
-    const isValidLanguage = (Object.keys(allLanguages) as AvailableLanguages).some(
-      (validLanugage) => validLanugage === language,
-    );
-    if (isValidLanguage) {
-      return language as AvailableLanguage;
-    }
-  }
-  return undefined;
-};
 
 export const useI18n = (path: string): {
   language: AvailableLanguage,
@@ -102,8 +97,8 @@ const HrefAlternateHeadTags: React.FC<{pathname: string}> = ({ pathname }) => {
 };
 
 /* eslint-disable react/jsx-props-no-spreading */
-export const withI18n = (Page: NextPage, pathname?: string): NextPage<GetI18nStaticProps> => {
-  const WithI18nProvider: NextPage<GetI18nStaticProps> = ({ language, ...props }) => (
+export const withI18n = (Page: NextPage, pathname?: string): NextPage<GetI18nProps> => {
+  const WithI18nProvider: NextPage<GetI18nProps> = ({ language, ...props }) => (
     <I18nContext.Provider value={{
       language,
       config: allLanguages[language],
@@ -127,20 +122,27 @@ export function getI18nStaticPaths(): GetI18nStaticPaths[] {
   );
 }
 
-export const getI18nStaticProps = (
+export const getI18nProps = (
   staticPathLanguage: AvailableLanguage | undefined,
-): GetI18nStaticProps => ({
-  language: staticPathLanguage || getLanguageFromURL() || defaultLanguage.prefix,
+): GetI18nProps => ({
+  language: staticPathLanguage || defaultLanguage.prefix,
 });
 
-// Partial to make href and as optional
-// in case you just want to switch the language
-interface LinkProps extends Partial<NextLinkProps> {
-  language?: string;
-  noLanguage?: boolean;
-  href?: string;
-  as?: string;
-}
+/*
+only works in the browser, where `window` is defined
+*/
+export const getLanguageFromURL = (): AvailableLanguage | undefined => {
+  if (typeof window !== 'undefined') {
+    const language = window.location.pathname.split('/')[1];
+    const isValidLanguage = (Object.keys(allLanguages) as AvailableLanguages).some(
+      (validLanugage) => validLanugage === language,
+    );
+    if (isValidLanguage) {
+      return language as AvailableLanguage;
+    }
+  }
+  return undefined;
+};
 
 /*
 only works in the browser, where `window` is defined
@@ -165,9 +167,16 @@ export const getI18nAgnosticPathname = (): string => {
   return '';
 };
 
+export const changeDocumentLanguage = (language: string): void => {
+  if (typeof window !== 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    window.document.querySelector('html')!.lang = language;
+  }
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const Link: React.FC<LinkProps> = ({
-  children, href = '', as = '', language, noLanguage = false, ...props
+  children, href = '', as = '', language, ...props
 }) => {
   const { language: contextLanguage } = React.useContext(I18nContext);
   const finalLanguage = language || contextLanguage;
@@ -177,8 +186,7 @@ export const Link: React.FC<LinkProps> = ({
   );
 
   function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    const el = document.querySelector('html');
-    if (el) el.lang = finalLanguage;
+    changeDocumentLanguage(finalLanguage);
     if (child) {
       if (typeof child.props.onClick === 'function') {
         child.props.onClick(e);
@@ -190,8 +198,8 @@ export const Link: React.FC<LinkProps> = ({
   // TODO: Fix it. Check: https://github.com/vinissimus/next-translate/blob/master/src/fixAs.js
   return (
     <NextLink
-      href={noLanguage ? href : `/${finalLanguage}${href || getI18nAgnosticPathname()}`}
-      as={noLanguage ? as || href : `/${finalLanguage}${as || href || getI18nAgnosticPathname()}`}
+      href={`/${finalLanguage}${href || getI18nAgnosticPathname()}`}
+      as={`/${finalLanguage}${as || href || getI18nAgnosticPathname()}`}
       {...props}
     >
       {React.cloneElement(child, { onClick })}
