@@ -58,6 +58,14 @@ const allLanguages: Config = {
 };
 ```
 
+## Notes
+
+- At first, I tried to include all the translations in the directory of their respective component, instead of having an identical component tree in the `/public` directory. I since decided to do the opposite for the following reasons:
+
+  - Dynamically importing JSON files as opposed to fetching them via XHR returned a webpack JS module instead of a simple JSON file. This means more payload size. :thumbs-down:
+
+  - I found it hard to dynamically import the JSON files using a helper that's located in another directory. e.g. with the `useI18n` hook. I tried passing it the `__dirname` of the component, but apparantly this feature [isn't](https://nextjs.org/docs/basic-features/data-fetching#reading-files-use-processcwd) [yet](https://github.com/vercel/next.js/issues/8251) [supported](https://github.com/vercel/next.js/issues/10943) by Next.JS. AFAIR, `__dirname` always returned an empty string.
+
 ## Builds on the work done in
 
 - [Vinissimus's next-translate](https://github.com/vinissimus/next-translate)

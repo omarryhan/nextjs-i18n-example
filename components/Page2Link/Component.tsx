@@ -2,11 +2,11 @@ import React from 'react';
 import styles from './styles.css';
 import { useI18n, withPrefetchTranslations, Link } from '../../utils/i18n';
 
-const TranslationsPath = 'SwitchLink';
+const TranslationsPath = 'Page2Link';
 
 const Component: React.FC = () => {
   const {
-    translations, isLoading, config,
+    translations, isLoading,
   } = useI18n(TranslationsPath);
 
   if (isLoading) {
@@ -18,7 +18,7 @@ const Component: React.FC = () => {
   }
 
   return (
-    <Link language={config.prefix === 'en' ? 'ar' : 'en'}>
+    <Link href="/page-2">
       {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
       <a className={styles.link}>
         {translations.name}

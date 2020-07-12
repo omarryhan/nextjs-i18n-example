@@ -1,10 +1,11 @@
 import React from 'react';
 import { NextPage } from 'next';
+import NextLink, { LinkProps as NextLinkProps } from 'next/link';
 import useSWR from 'swr';
 import Head from 'next/head';
 import config from '../i18n.config';
 
-const { allLanguages, defaultLanguage } = config;
+const { allLanguages, defaultLanguage, domains } = config;
 
 // type AvailableLanguages = Array<keyof typeof allLanguages>;
 type AvailableLanguages = string[];
@@ -79,15 +80,40 @@ export const withPrefetchTranslations = <Props, >(
   return WithPrefetchTranslations;
 };
 
-/* eslint-disable react/destructuring-assignment */
+const HrefAlternateHeadTags: React.FC<{pathname: string}> = ({ pathname }) => {
+  const currentDomain = process.env.NODE_ENV === 'production' ? domains.production : domains.development;
+
+  return (
+    <Head>
+      {
+        Object.keys(allLanguages).map(
+          (language) => (
+            <link
+              key={allLanguages[language].prefix}
+              rel="alternate"
+              href={`${currentDomain}/${allLanguages[language].prefix}${pathname}`}
+              hrefLang={allLanguages[language].prefix}
+            />
+          ),
+        )
+      }
+    </Head>
+  );
+};
+
 /* eslint-disable react/jsx-props-no-spreading */
-export const withI18n = (Page: NextPage): NextPage<GetI18nStaticProps> => {
-  const WithI18nProvider: NextPage<GetI18nStaticProps> = (props) => (
+export const withI18n = (Page: NextPage, pathname?: string): NextPage<GetI18nStaticProps> => {
+  const WithI18nProvider: NextPage<GetI18nStaticProps> = ({ language, ...props }) => (
     <I18nContext.Provider value={{
-      language: props.language,
-      config: allLanguages[props.language],
+      language,
+      config: allLanguages[language],
     }}
     >
+      {
+        typeof pathname !== 'undefined' && (
+          <HrefAlternateHeadTags pathname={pathname} />
+        )
+      }
       <Page {...props} />
     </I18nContext.Provider>
   );
@@ -106,3 +132,47 @@ export const getI18nStaticProps = (
 ): GetI18nStaticProps => ({
   language: staticPathLanguage || getLanguageFromURL() || defaultLanguage.prefix,
 });
+
+// Partial to make href and as optional
+// in case you just want to switch the language
+interface LinkProps extends Partial<NextLinkProps> {
+  language?: string;
+  noLanguage?: boolean;
+  href?: string;
+  as?: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const Link: React.FC<LinkProps> = ({
+  children, href = '', as = '', language, noLanguage = false, ...props
+}) => {
+  console.log(href);
+  const { language: contextLanguage } = React.useContext(I18nContext);
+  const finalLanguage = language || contextLanguage;
+  const child = React.Children.only<any>(
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid
+    typeof children === 'string' ? <a>{children}</a> : children,
+  );
+
+  function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    const el = document.querySelector('html');
+    if (el) el.lang = finalLanguage;
+    if (child) {
+      if (typeof child.props.onClick === 'function') {
+        child.props.onClick(e);
+      }
+    }
+  }
+
+  // NOTE: Only prepending lang misses some edge cases.
+  // TODO: Fix it. Check: https://github.com/vinissimus/next-translate/blob/master/src/fixAs.js
+  return (
+    <NextLink
+      href={noLanguage ? href : `/${finalLanguage}${href}`}
+      as={noLanguage ? as || href : `/${finalLanguage}${as || href}`}
+      {...props}
+    >
+      {React.cloneElement(child, { onClick })}
+    </NextLink>
+  );
+};

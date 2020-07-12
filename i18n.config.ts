@@ -8,6 +8,11 @@ interface Config {
   [key:string]: Language
 }
 
+interface Domains {
+  development: string;
+  production: string;
+}
+
 const allLanguages: Config = {
   en: {
     name: 'English',
@@ -22,7 +27,13 @@ const allLanguages: Config = {
 
 const defaultLanguage = allLanguages.ar;
 
+const domains: Domains = {
+  development: 'http://localhost:3000',
+  production: 'https://https://next-i18n-dynamic.netlify.app',
+};
+
 export default {
   allLanguages,
   defaultLanguage,
+  domains,
 };

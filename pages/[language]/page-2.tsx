@@ -15,7 +15,6 @@ import {
 import Title from '../../components/Title';
 import SwtitchLink from '../../components/SwitchLink';
 import SwtichButton from '../../components/SwitchButton';
-import Page2Link from '../../components/Page2Link';
 
 const Page: NextPage = () => (
   <>
@@ -26,7 +25,6 @@ const Page: NextPage = () => (
     <Title />
     <SwtitchLink />
     <SwtichButton />
-    <Page2Link />
   </>
 );
 
@@ -47,4 +45,4 @@ export const getStaticProps: GetStaticProps<GetI18nStaticProps, GetI18nStaticPro
 //   props: getI18nStaticProps(params?.language),
 // });
 
-export default withI18n(Page, '');
+export default withI18n(Page, '/page-2s');
