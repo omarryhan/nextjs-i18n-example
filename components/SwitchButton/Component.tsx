@@ -1,6 +1,6 @@
 import React from 'react';
 import Router from 'next/router';
-import { useI18n, withPrefetchTranslations } from '../../utils/i18n';
+import { useI18n, withPrefetchTranslations, getI18nAgnosticPathname } from '../../utils/i18n';
 
 const TranslationsPath = 'SwitchButton';
 
@@ -20,7 +20,7 @@ const Component: React.FC = () => {
   return (
     <button
       onClick={
-        () => Router.push(`/${config.prefix === 'en' ? 'ar' : 'en'}`)
+        () => Router.push(`/${config.prefix === 'en' ? 'ar' : 'en'}${getI18nAgnosticPathname()}`)
       }
       type="button"
     >

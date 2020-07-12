@@ -146,7 +146,6 @@ interface LinkProps extends Partial<NextLinkProps> {
 export const Link: React.FC<LinkProps> = ({
   children, href = '', as = '', language, noLanguage = false, ...props
 }) => {
-  console.log(href);
   const { language: contextLanguage } = React.useContext(I18nContext);
   const finalLanguage = language || contextLanguage;
   const child = React.Children.only<any>(
@@ -175,4 +174,27 @@ export const Link: React.FC<LinkProps> = ({
       {React.cloneElement(child, { onClick })}
     </NextLink>
   );
+};
+
+/*
+only works in the browser, where `window` is defined
+*/
+export const getI18nAgnosticPathname = (): string => {
+  if (typeof window !== 'undefined') {
+    const { pathname } = window.location;
+    const paths = pathname.split('/');
+    const mightBePrefix = paths[1];
+
+    const allPrefixes = Object.values(allLanguages).map((lang) => lang.prefix);
+
+    const isPrefix = allPrefixes.some((prefix) => prefix === mightBePrefix);
+
+    if (isPrefix) {
+      paths.splice(1, 1);
+    }
+
+    return paths.join('/');
+  }
+
+  return '';
 };
