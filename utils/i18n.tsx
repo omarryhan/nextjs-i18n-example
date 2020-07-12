@@ -163,7 +163,6 @@ export const getI18nAgnosticPathname = (): string => {
 
     return paths.join('/');
   }
-
   return '';
 };
 
