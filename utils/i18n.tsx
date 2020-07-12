@@ -1,6 +1,7 @@
 import React from 'react';
 import { NextPage } from 'next';
 import useSWR from 'swr';
+import Head from 'next/head';
 import config from '../i18n.config';
 
 const { allLanguages, defaultLanguage } = config;
@@ -57,6 +58,25 @@ export const useI18n = (path: string): {
     translations: data || {},
     error,
   };
+};
+
+/* eslint-disable react/jsx-props-no-spreading */
+export const withPrefetchTranslations = <Props, >(
+  Component: React.FC<Props>, path: string,
+): React.FC<Props> => {
+  const WithPrefetchTranslations: React.FC<Props> = (props) => {
+    const { language } = React.useContext(I18nContext);
+    return (
+      <>
+        <Head>
+          <link rel="prefetch" href={`/translations/${path}/${language}.json`} as="fetch" crossOrigin="anonymous" />
+        </Head>
+        <Component {...props} />
+      </>
+    );
+  };
+
+  return WithPrefetchTranslations;
 };
 
 /* eslint-disable react/destructuring-assignment */

@@ -1,12 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
 import styles from './styles.css';
-import { useI18n } from '../../utils/i18n';
+import { useI18n, withPrefetchTranslations } from '../../utils/i18n';
+
+const TranslationsPath = 'SwitchLink';
 
 const Component: React.FC = () => {
   const {
     translations, isLoading, config,
-  } = useI18n('SwitchLink');
+  } = useI18n(TranslationsPath);
 
   if (isLoading) {
     return (
@@ -26,4 +28,4 @@ const Component: React.FC = () => {
   );
 };
 
-export default Component;
+export default withPrefetchTranslations(Component, TranslationsPath);

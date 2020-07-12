@@ -14,6 +14,8 @@
 
 - If you don't want to maintain the all the i18n logic yourself.
 
+- Don't want to write a lot of boilerplate
+
 ## Files
 
 **1. `pages/_document.tsx`:**
@@ -35,6 +37,8 @@ Has:
 - `withI18n` --> to wrapp all the pages that have components that will use the `useI18n` hook
 
 - `useI18n` --> Returns the language loaded by `withI18n` along with the configs.
+
+- `withPrefetchTranslations` --> Adds a prefetch header so that the user doesn't have to wait for the component to mount in order to download the translations. This however doesn't entirely solve the latency issue because your page won't show the translations until the components actually mount. That's because SWR can only access the prefetched version when the component mounts and the all the JS has been loaded. This can be useful for large translations and large XHR requests in general. But given the atomicity of the translations in this example, it probably won't make much difference in the latency anyway, because the major bottleneck is React, not the translations. NOTE: Neither works on Safari nor Safari IOS.
 
 **4. `i18n.config.ts`:**
 

@@ -1,11 +1,13 @@
 import React from 'react';
 import Router from 'next/router';
-import { useI18n } from '../../utils/i18n';
+import { useI18n, withPrefetchTranslations } from '../../utils/i18n';
+
+const TranslationsPath = 'SwitchButton';
 
 const Component: React.FC = () => {
   const {
     translations, isLoading, config,
-  } = useI18n('SwitchButton');
+  } = useI18n(TranslationsPath);
 
   if (isLoading) {
     return (
@@ -27,4 +29,4 @@ const Component: React.FC = () => {
   );
 };
 
-export default Component;
+export default withPrefetchTranslations(Component, TranslationsPath);
