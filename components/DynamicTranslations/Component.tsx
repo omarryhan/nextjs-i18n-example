@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDynamicI18n, withPrefetchDynamicTranslations } from '../../utils/i18n';
 
-const TranslationsPath = 'DynamicTranslations';
+const TranslationsPath = 'components/DynamicTranslations';
 
 const Component: React.FC = () => {
   const {

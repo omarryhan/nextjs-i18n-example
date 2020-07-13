@@ -121,7 +121,10 @@ const HrefAlternateHeadTags: React.FC<{pathname: string}> = ({ pathname }) => {
 };
 
 /* eslint-disable react/jsx-props-no-spreading */
-export const withI18n = (Page: NextPage, pathname?: string): NextPage<GetI18nProps> => {
+/*
+  pageRoute is used to add the href alternate head tags link. Optional
+*/
+export const withI18n = (Page: NextPage, pageRoute?: string): NextPage<GetI18nProps> => {
   const WithI18nProvider: NextPage<GetI18nProps> = ({ language, translations, ...props }) => (
     <I18nContext.Provider value={{
       language,
@@ -130,8 +133,8 @@ export const withI18n = (Page: NextPage, pathname?: string): NextPage<GetI18nPro
     }}
     >
       {
-        typeof pathname !== 'undefined' && (
-          <HrefAlternateHeadTags pathname={pathname} />
+        typeof pageRoute !== 'undefined' && (
+          <HrefAlternateHeadTags pathname={pageRoute} />
         )
       }
       <Page {...props} />

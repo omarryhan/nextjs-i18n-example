@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  align-items: center;
+  background-color: blanchedalmond;
+  overflow-x: scroll;
+}
+
+.header a {
+  padding: 20px 20px;
+}
+
+.header button {
+  padding: 20px 20px;
+  width: 300px;
+}

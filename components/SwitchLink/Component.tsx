@@ -4,12 +4,10 @@ import {
   useI18n, Link,
 } from '../../utils/i18n';
 
-const TranslationsPath = 'SwitchLink';
-
 const Component: React.FC = () => {
   const {
     translations, config,
-  } = useI18n(TranslationsPath);
+  } = useI18n('components/SwitchLink');
 
   return (
     <Link language={config.prefix === 'en' ? 'ar' : 'en'}>

@@ -1,17 +1,15 @@
 import React from 'react';
 import { useI18n } from '../../utils/i18n';
 
-const TranslationsPath = 'Title';
-
-const Component: React.FC = () => {
+const Component: React.FC<{title: string}> = ({ title }) => {
   const {
     language, translations, config,
-  } = useI18n(TranslationsPath);
+  } = useI18n('components/Title');
 
   return (
     <div>
       <h1>
-        {translations.name}
+        {title}
       </h1>
       <h2>
         {translations.language_description}
@@ -22,7 +20,7 @@ const Component: React.FC = () => {
         {translations.prefix_description}
         {' '}
 
-        {/* Same */}
+        {/* Should be the same */}
         {config.prefix || language}
       </p>
     </div>

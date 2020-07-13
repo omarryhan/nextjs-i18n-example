@@ -3,7 +3,6 @@ import {
   NextPage,
   GetStaticPaths,
   GetStaticProps,
-  // GetServerSideProps,
 } from 'next';
 import Head from 'next/head';
 import {
@@ -12,28 +11,26 @@ import {
   getI18nProps,
   GetI18nProps,
   GetI18nQuery,
-  Link,
+  useI18n,
 } from '../../utils/i18n';
 import DynamicTranslations from '../../components/DynamicTranslations';
-import SwtitchLink from '../../components/SwitchLink';
-import SwtichButton from '../../components/SwitchButton';
+import Header from '../../components/Header';
+import Title from '../../components/Title';
 
-const Page: NextPage = () => (
-  <>
-    <Head>
-      <meta name="title" content="Dynamic" />
-      <title>Dynamic</title>
-    </Head>
-    <SwtitchLink />
-    <SwtichButton />
-    <DynamicTranslations />
-    <Link href="">
-      <a style={{ display: 'block' }}>
-        Home (too lazy to translate this text)
-      </a>
-    </Link>
-  </>
-);
+const Page: NextPage = () => {
+  const { translations } = useI18n('pages/[language]/dynamic');
+  return (
+    <>
+      <Head>
+        <meta name="title" content={translations.title as string} />
+        <title>{translations.title}</title>
+      </Head>
+      <Header />
+      <Title title={translations.title as string} />
+      <DynamicTranslations />
+    </>
+  );
+};
 
 export const getStaticPaths: GetStaticPaths = async () => ({
   paths: getI18nStaticPaths(),
@@ -46,11 +43,12 @@ export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async 
   props: await getI18nProps(
     params?.language,
     [
-      'NestedTranslation/NestedDir',
-      'Page2Link',
-      'SwitchButton',
-      'SwitchLink',
-      'Title',
+      'pages/[language]/dynamic',
+      'components/Header',
+      'components/SwitchButton',
+      'components/SwitchLink',
+      'components/Title',
+      'components/DynamicTranslations',
     ],
   ),
 });

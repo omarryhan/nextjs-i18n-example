@@ -2,12 +2,10 @@ import React from 'react';
 import Router from 'next/router';
 import { useI18n, getI18nAgnosticPathname } from '../../utils/i18n';
 
-const TranslationsPath = 'SwitchButton';
-
 const Component: React.FC = () => {
   const {
     translations, config,
-  } = useI18n(TranslationsPath);
+  } = useI18n('components/SwitchButton');
 
   return (
     <button

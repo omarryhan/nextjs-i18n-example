@@ -20,12 +20,10 @@ class MyApp extends App<AppInitialProps> {
     return (
       <>
         <Head>
-          <meta name="title" content="Next i18n example" />
-          <meta name="description" content="Next i18n example" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         </Head>
-        <div dir={direction} style={{ maxWidth: '700px', margin: '0 auto', backgroundColor: '#ddd' }}>
+        <div dir={direction} style={{ maxWidth: '1000px', margin: '0 auto', backgroundColor: '#ddd' }}>
           <Component
             {...pageProps}
           />
