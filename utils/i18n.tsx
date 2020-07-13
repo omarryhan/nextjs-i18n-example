@@ -225,11 +225,9 @@ export const Link: React.FC<LinkProps> = ({
 }) => {
   const { language: contextLanguage } = React.useContext(I18nContext);
   const finalLanguage = language || contextLanguage;
-  const child = React.Children.only<JSX.Element>(
-    // Can't check the type of children to be an anchor element
-    // typeof children === 'string' ? <a>{children}</a> : children,
-    <a>{children}</a>,
-  );
+  const child = React.Children.only<typeof children>(
+    typeof children === 'string' ? <a>{children}</a> : children,
+  ) as JSX.Element;
 
   function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
     changeDocumentLanguage(finalLanguage);
@@ -245,8 +243,8 @@ export const Link: React.FC<LinkProps> = ({
 
   return (
     <NextLink
-      href={`/${finalLanguage}${finalHref}`}
-      as={typeof as !== 'undefined' ? `/${finalLanguage}${as}` : as}
+      href={`/[language]${finalHref}`}
+      as={`/${finalLanguage}${as || finalHref}`}
       passHref
       {...props}
     >
