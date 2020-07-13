@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import Router from 'next/router';
 
 import { GetServerSideProps } from 'next';
@@ -13,7 +14,11 @@ const Component: React.FC<GetI18nProps> = ({ language }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return null;
+  return (
+    <Head>
+      <meta name="robots" content="noindex, nofollow" />
+    </Head>
+  );
 };
 
 // https://stackoverflow.com/questions/5639346/what-is-the-shortest-function-for-reading-a-cookie-by-name-in-javascript
