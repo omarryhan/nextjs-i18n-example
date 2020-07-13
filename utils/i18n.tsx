@@ -216,6 +216,10 @@ export const changeDocumentLanguage = (language: string): void => {
   }
 };
 
+export const setI18nCookie = (language: string): void => {
+  document.cookie = `preferred-language=${language}`;
+};
+
 export const Link: React.FC<LinkProps> = ({
   children, href, as, language, ...props
 }) => {
@@ -227,6 +231,7 @@ export const Link: React.FC<LinkProps> = ({
 
   function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
     changeDocumentLanguage(finalLanguage);
+    setI18nCookie(finalLanguage);
     if (child) {
       if (typeof child.props.onClick === 'function') {
         child.props.onClick(e);

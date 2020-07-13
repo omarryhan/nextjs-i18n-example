@@ -3,6 +3,7 @@ import {
   NextPage,
   GetStaticPaths,
   GetStaticProps,
+  GetServerSideProps,
 } from 'next';
 import Head from 'next/head';
 import {

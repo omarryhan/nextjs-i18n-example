@@ -2,9 +2,9 @@
 
 ## Why use
 
-- In the spirit of React, each component has its own set of translations, instead of declaring them in a global `locales` folder. Each component's translation dir is placed under: `/public/translations/`. So, translations for `components/Title` component, will be found under: `/public/translations/Title`. And for the `components/Nested/NestedComponent` will be found under `/public/translations/Nested/NestedComponent`.
+- In the spirit of React, each component and page have their own set of translations, instead of declaring them in a global `locales` folder. Each component's translation dir is placed under: `/public/translations/`. So, translations for `components/Title` component, will be found under: `/public/translations/components/Title`. And for the `components/Nested/NestedComponent` will be found under `/public/translations/Nested/NestedComponent` and for `pages/[language]/page-2` will be found under `public/translations/pages/[language]/page-2`
 
-- Server loaded + dynamic translations
+- Support for both: server loaded translations and dynamic translations
 
 - Dynamic translations are cahched using a stale while revlidate cache strategy (using Vercel's [SWR lib](https://github.com/vercel/swr)), so that only the first load will result in a delay. Don't use this example if SEO is a top priority.
 
@@ -15,6 +15,8 @@
 - If you don't want to maintain the all the i18n logic yourself.
 
 - Don't want to write a lot of boilerplate
+
+- I recommend using [next-translate/examples/with-dynamic-routes](https://github.com/vinissimus/next-translate/tree/master/examples/with-dynamic-routes) instead if you find the above points painful enough.
 
 ## Files
 
@@ -127,11 +129,15 @@ Wraps next/link and accepts these extra props:
 
 A side effect of this component is that it changes the document's language, when clicked, to the language it redirected to.
 
-Note: Mostly borrowed from next-translate. I would've imported it if it weren't for our custom context hook.
+Note: Mostly borrowed from next-translate. I would've imported it if it weren't for the fact that next-js call their own hook from within this component.
 
 #### `changeDocumentLanguage`
 
 Given a language prefix on the browser, sets it to \<html>'s lang attribute. Use when changing langugaes. `Link` automatically handles that for you.
+
+#### `setI18nCookie`
+
+Sets a cookie with a name of: `preferred-language` to your cookies. Only works in the browser. See `pages/[language]/index.tsx` to see how this cookie is loaded on the server.
 
 #### `getI18nAgnosticPathname`
 
@@ -143,13 +149,15 @@ Opposite of `changeDocumentLanguage`. Strips the language prefix from `window.lo
 
 ## Pain points
 
-1. It's quite cumbersome to list the names of the translations needed for each page. Since the page knows which components it will mount, we should expect it to know which translations to load. I can't think of a clean workaround to solve this problem. Please let me know your thoughts.
+1. It's quite cumbersome to list the names of the translations needed for each page. Since all pages already knows which components they will mount, we should expect them to know which translations to load without needing to specify them. I can't think of a clean workaround to solve this problem. Please let me know your thoughts.
+
+2. Redirecting from '/' to '/ar' or '/en' is easy. But what if the user goes to '/page-2' and not '/ar/page-2'. Imo, it should treat it like '/' does and not return a 404.
 
 ## Notes
 
-- At first, I tried to store all the translations, in the directory of their respective component. Instead of the current approach (having an identical component tree in the `/public` directory). I switched to the current approach due to the following reasons:
+- At first, I tried to store all the translations, in the directory of their respective component, instead of the current approach (having an identical component and pages tree in the `/public` directory). I switched to the current approach due to the following reasons:
 
-  - **Dynamically** importing JSON files as opposed to fetching them via XHR returned a webpack JS module instead of a simple JSON file. This means more payload size. :thumbs-down:. I'm not sure why this is happening, is it a Typescript thing? No clue.
+  - **Dynamically** importing JSON files as opposed to fetching them via XHR returned a webpack JS module instead of a simple JSON file. This means more payload size. :thumbs-down:. I'm not sure why this was happening, is it a Typescript thing? No clue.
 
   - I found it hard to dynamically (on the browser) import JSON files using a helper that's located in another directory. e.g. with the `useDynamicI18n` hook, I tried passing it the `__dirname` of the component from the component, but apparantly this feature [isn't](https://nextjs.org/docs/basic-features/data-fetching#reading-files-use-processcwd) [yet](https://github.com/vercel/next.js/issues/8251) [supported](https://github.com/vercel/next.js/issues/10943) by Next.JS. AFAIR, `__dirname` always returned an empty string. Tl;Dr I can't think of a way to dynamically import translations found in the folder of the component. from a helper module, e.g. `utils/i18n.ts`.
 
