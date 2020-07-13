@@ -161,6 +161,11 @@ Opposite of `changeDocumentLanguage`. Strips the language prefix from `window.lo
 
   - I found it hard to dynamically (on the browser) import JSON files using a helper that's located in another directory. e.g. with the `useDynamicI18n` hook, I tried passing it the `__dirname` of the component from the component, but apparantly this feature [isn't](https://nextjs.org/docs/basic-features/data-fetching#reading-files-use-processcwd) [yet](https://github.com/vercel/next.js/issues/8251) [supported](https://github.com/vercel/next.js/issues/10943) by Next.JS. AFAIR, `__dirname` always returned an empty string. Tl;Dr I can't think of a way to dynamically import translations found in the folder of the component. from a helper module, e.g. `utils/i18n.ts`.
 
+## SEO resources
+
+- https://support.google.com/webmasters/answer/182192?hl=en
+- https://support.google.com/webmasters/answer/189077
+
 ## This example builds heavily on the work done in
 
 - [Vinissimus's next-translate](https://github.com/vinissimus/next-translate)
