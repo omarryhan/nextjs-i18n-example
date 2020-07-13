@@ -10,6 +10,7 @@ const { defaultLanguage } = i18nConfig;
 const Component: React.FC<GetI18nProps> = ({ language }) => {
   React.useEffect(() => {
     Router.replace(`/${language}`);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

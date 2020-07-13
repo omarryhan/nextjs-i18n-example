@@ -46,9 +46,9 @@ const I18nContext = React.createContext({
 export const useDynamicI18n = (path: string): {
   language: AvailableLanguage,
   config: typeof defaultLanguage,
-  translations: { [key: string]: any },
+  translations: TranslationsType,
   isLoading: boolean,
-  error: any,
+  error: typeof Error,
 } => {
   const { language } = React.useContext(I18nContext);
 
@@ -225,8 +225,10 @@ export const Link: React.FC<LinkProps> = ({
 }) => {
   const { language: contextLanguage } = React.useContext(I18nContext);
   const finalLanguage = language || contextLanguage;
-  const child = React.Children.only<any>(
-    typeof children === 'string' ? <a>{children}</a> : children,
+  const child = React.Children.only<JSX.Element>(
+    // Can't check the type of children to be an anchor element
+    // typeof children === 'string' ? <a>{children}</a> : children,
+    <a>{children}</a>,
   );
 
   function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
@@ -241,8 +243,6 @@ export const Link: React.FC<LinkProps> = ({
 
   const finalHref = typeof href === 'undefined' ? getI18nAgnosticPathname() || '' : href;
 
-  // NOTE: Only prepending lang misses some edge cases.
-  // TODO: Fix it. Check: https://github.com/vinissimus/next-translate/blob/master/src/fixAs.js
   return (
     <NextLink
       href={`/${finalLanguage}${finalHref}`}
