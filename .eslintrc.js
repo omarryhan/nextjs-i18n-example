@@ -37,5 +37,6 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'warn', // not error
     'no-else-return': 'off',
     'no-alert': 'off',
+    'jsx-a11y/anchor-is-valid': 'off', // Next.JS specific.
   },
 };

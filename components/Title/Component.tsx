@@ -1,20 +1,12 @@
 import React from 'react';
-import { useI18n, withPrefetchTranslations } from '../../utils/i18n';
+import { useI18n } from '../../utils/i18n';
 
 const TranslationsPath = 'Title';
 
 const Component: React.FC = () => {
   const {
-    language, translations, isLoading, config,
+    language, translations, config,
   } = useI18n(TranslationsPath);
-
-  if (isLoading) {
-    return (
-      <h1>
-        Loading translations...
-      </h1>
-    );
-  }
 
   return (
     <div>
@@ -37,4 +29,4 @@ const Component: React.FC = () => {
   );
 };
 
-export default withPrefetchTranslations(Component, TranslationsPath);
+export default Component;

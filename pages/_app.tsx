@@ -25,7 +25,7 @@ class MyApp extends App<AppInitialProps> {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         </Head>
-        <div dir={direction}>
+        <div dir={direction} style={{ maxWidth: '700px', margin: '0 auto', backgroundColor: '#ddd' }}>
           <Component
             {...pageProps}
           />

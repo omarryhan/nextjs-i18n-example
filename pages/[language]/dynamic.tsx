@@ -14,24 +14,22 @@ import {
   GetI18nQuery,
   Link,
 } from '../../utils/i18n';
-import Title from '../../components/Title';
+import DynamicTranslations from '../../components/DynamicTranslations';
 import SwtitchLink from '../../components/SwitchLink';
 import SwtichButton from '../../components/SwitchButton';
-import Page2Link from '../../components/Page2Link';
 
 const Page: NextPage = () => (
   <>
     <Head>
-      <meta name="title" content="Home" />
-      <title>Home</title>
+      <meta name="title" content="Dynamic" />
+      <title>Dynamic</title>
     </Head>
-    <Title />
     <SwtitchLink />
     <SwtichButton />
-    <Page2Link />
-    <Link href="/dynamic">
+    <DynamicTranslations />
+    <Link href="">
       <a style={{ display: 'block' }}>
-        dynamic (too lazy to translate this text)
+        Home (too lazy to translate this text)
       </a>
     </Link>
   </>
@@ -57,4 +55,4 @@ export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async 
   ),
 });
 
-export default withI18n(Page, '');
+export default withI18n(Page, '/dynamic');

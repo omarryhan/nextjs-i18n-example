@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import NextLink, { LinkProps as NextLinkProps } from 'next/link';
 import useSWR from 'swr';
 import Head from 'next/head';
+import { JsonMap } from '../types/json';
 import config from '../i18n.config';
 
 const { allLanguages, defaultLanguage, domains } = config;
@@ -11,13 +12,21 @@ const { allLanguages, defaultLanguage, domains } = config;
 type AvailableLanguages = string[];
 type AvailableLanguage = string;
 
+interface TranslationsType {
+  [key:string]: JsonMap;
+}
+
 export interface GetI18nProps {
-  // language: AvailableLanguage;
+  language: AvailableLanguage;
+  translations: TranslationsType;
+}
+
+export interface GetI18nQuery {
   [key: string]: string;
 }
 
 interface GetI18nStaticPaths {
-  params: GetI18nProps;
+  params: GetI18nQuery;
 }
 
 // Partial to make href and as optional
@@ -30,10 +39,11 @@ interface LinkProps extends Partial<NextLinkProps> {
 
 const I18nContext = React.createContext({
   language: defaultLanguage.prefix,
+  translations: {} as TranslationsType,
   config: defaultLanguage,
 });
 
-export const useI18n = (path: string): {
+export const useDynamicI18n = (path: string): {
   language: AvailableLanguage,
   config: typeof defaultLanguage,
   translations: { [key: string]: any },
@@ -56,11 +66,25 @@ export const useI18n = (path: string): {
   };
 };
 
+export const useI18n = (path: string): {
+  language: AvailableLanguage,
+  translations: JsonMap,
+  config: typeof defaultLanguage,
+} => {
+  const { language, translations } = React.useContext(I18nContext);
+
+  return {
+    language,
+    translations: translations[path],
+    config: allLanguages[language],
+  };
+};
+
 /* eslint-disable react/jsx-props-no-spreading */
-export const withPrefetchTranslations = <Props, >(
+export const withPrefetchDynamicTranslations = <Props, >(
   Component: React.FC<Props>, path: string,
 ): React.FC<Props> => {
-  const WithPrefetchTranslations: React.FC<Props> = (props) => {
+  const WithPrefetchDynamicTranslations: React.FC<Props> = (props) => {
     const { language } = React.useContext(I18nContext);
     return (
       <>
@@ -72,7 +96,7 @@ export const withPrefetchTranslations = <Props, >(
     );
   };
 
-  return WithPrefetchTranslations;
+  return WithPrefetchDynamicTranslations;
 };
 
 const HrefAlternateHeadTags: React.FC<{pathname: string}> = ({ pathname }) => {
@@ -98,9 +122,10 @@ const HrefAlternateHeadTags: React.FC<{pathname: string}> = ({ pathname }) => {
 
 /* eslint-disable react/jsx-props-no-spreading */
 export const withI18n = (Page: NextPage, pathname?: string): NextPage<GetI18nProps> => {
-  const WithI18nProvider: NextPage<GetI18nProps> = ({ language, ...props }) => (
+  const WithI18nProvider: NextPage<GetI18nProps> = ({ language, translations, ...props }) => (
     <I18nContext.Provider value={{
       language,
+      translations,
       config: allLanguages[language],
     }}
     >
@@ -122,11 +147,25 @@ export function getI18nStaticPaths(): GetI18nStaticPaths[] {
   );
 }
 
-export const getI18nProps = (
-  staticPathLanguage: AvailableLanguage | undefined,
-): GetI18nProps => ({
-  language: staticPathLanguage || defaultLanguage.prefix,
-});
+export const getI18nProps = async (
+  language: AvailableLanguage | undefined,
+  paths?: string[],
+): Promise<GetI18nProps> => {
+  const translations: TranslationsType = {};
+  if (paths) {
+    await Promise.all(
+      paths.map(async (path) => {
+        const module = await import(`../public/translations/${path}/${language}.json`);
+        translations[path] = module.default as JsonMap;
+      }),
+    );
+  }
+
+  return ({
+    language: language || defaultLanguage.prefix,
+    translations,
+  });
+};
 
 /*
 only works in the browser, where `window` is defined
@@ -147,7 +186,7 @@ export const getLanguageFromURL = (): AvailableLanguage | undefined => {
 /*
 only works in the browser, where `window` is defined
 */
-export const getI18nAgnosticPathname = (): string => {
+export const getI18nAgnosticPathname = (): string | undefined => {
   if (typeof window !== 'undefined') {
     const { pathname } = window.location;
     const paths = pathname.split('/');
@@ -164,7 +203,7 @@ export const getI18nAgnosticPathname = (): string => {
     return paths.join('/');
   }
 
-  return '';
+  return undefined;
 };
 
 export const changeDocumentLanguage = (language: string): void => {
@@ -174,14 +213,12 @@ export const changeDocumentLanguage = (language: string): void => {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const Link: React.FC<LinkProps> = ({
-  children, href = '', as = '', language, ...props
+  children, href, as, language, ...props
 }) => {
   const { language: contextLanguage } = React.useContext(I18nContext);
   const finalLanguage = language || contextLanguage;
   const child = React.Children.only<any>(
-    // eslint-disable-next-line jsx-a11y/anchor-is-valid
     typeof children === 'string' ? <a>{children}</a> : children,
   );
 
@@ -194,12 +231,15 @@ export const Link: React.FC<LinkProps> = ({
     }
   }
 
+  const finalHref = typeof href === 'undefined' ? getI18nAgnosticPathname() || '' : href;
+
   // NOTE: Only prepending lang misses some edge cases.
   // TODO: Fix it. Check: https://github.com/vinissimus/next-translate/blob/master/src/fixAs.js
   return (
     <NextLink
-      href={`/${finalLanguage}${href || getI18nAgnosticPathname()}`}
-      as={`/${finalLanguage}${as || href || getI18nAgnosticPathname()}`}
+      href={`/${finalLanguage}${finalHref}`}
+      as={typeof as !== 'undefined' ? `/${finalLanguage}${as}` : as}
+      passHref
       {...props}
     >
       {React.cloneElement(child, { onClick })}

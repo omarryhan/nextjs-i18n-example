@@ -11,6 +11,8 @@ import {
   withI18n,
   getI18nProps,
   GetI18nProps,
+  GetI18nQuery,
+  Link,
 } from '../../utils/i18n';
 import Title from '../../components/Title';
 import SwtitchLink from '../../components/SwitchLink';
@@ -19,30 +21,38 @@ import SwtichButton from '../../components/SwitchButton';
 const Page: NextPage = () => (
   <>
     <Head>
-      <meta name="title" content="Next Translate Demo | Home" />
-      <title>Next Translate Demo | Home</title>
+      <meta name="title" content="Page-2" />
+      <title>Page-2</title>
     </Head>
     <Title />
     <SwtitchLink />
     <SwtichButton />
+    <Link href="">
+      <a style={{ display: 'block' }}>
+        Home (too lazy to translate this text)
+      </a>
+    </Link>
   </>
 );
 
-export const getStaticPaths: GetStaticPaths<GetI18nProps> = async () => ({
+export const getStaticPaths: GetStaticPaths = async () => ({
   paths: getI18nStaticPaths(),
   fallback: false,
 });
 
-export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nProps> = async ({
+export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async ({
   params,
 }) => ({
-  props: getI18nProps(params?.language),
+  props: await getI18nProps(
+    params?.language,
+    [
+      'NestedTranslation/NestedDir',
+      'Page2Link',
+      'SwitchButton',
+      'SwitchLink',
+      'Title',
+    ],
+  ),
 });
 
-// export const getServerSideProps: GetServerSideProps<
-// GetI18nProps, GetI18nProps
-// > = async ({ params }) => ({
-//   props: getI18nProps(params?.language),
-// });
-
-export default withI18n(Page, '/page-2s');
+export default withI18n(Page, '/page-2');
