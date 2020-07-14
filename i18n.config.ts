@@ -29,7 +29,7 @@ const defaultLanguage: Language = allLanguages.ar;
 
 const domains: Domains = {
   development: 'http://localhost:3000',
-  production: 'https://https://next-i18n-dynamic.netlify.app',
+  production: 'https://next-i18n-dynamic.netlify.app',
 };
 
 export default {

@@ -4,10 +4,10 @@ import { useI18n } from '../../utils/i18n';
 const Component: React.FC<{title: string}> = ({ title }) => {
   const {
     language, translations, config,
-  } = useI18n('components/Title');
+  } = useI18n('/components/Title');
 
   return (
-    <div>
+    <div style={{ padding: '10px 10px' }}>
       <h1>
         {title}
       </h1>

@@ -12,14 +12,13 @@ import {
   GetI18nProps,
   GetI18nQuery,
   useI18n,
-  Translations,
 } from '../../utils/i18n';
 import Header from '../../components/Header';
 import Title from '../../components/Title';
 import RosettaImage from '../../components/RosettaImage';
 
 const Page: NextPage = () => {
-  const { translations } = useI18n('pages/[language]/index');
+  const { translations } = useI18n('/pages/[language]/index');
   return (
     <>
       <Head>
@@ -41,12 +40,15 @@ export const getStaticPaths: GetStaticPaths = async () => ({
 export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async ({
   params,
 }) => ({
-  props: await getI18nProps({
-    language: params?.language as string,
-    // can only import node modules here and not in any other file
-    // More specifically, not outside of getStaticProps and getServerSideProps
-    fs: await (await import('fs')).promises,
-  }),
+  props: {
+    ...await getI18nProps({
+      language: params?.language as string,
+      // The reason we're importing here, is because we can only
+      // import node modules here and not in any other file.
+      // More specifically, not outside of getStaticProps and getServerSideProps
+      fs: (await import('fs')).promises, // pass it to import all the translations
+    }),
+  },
 });
 
 export default withI18n(Page, '');

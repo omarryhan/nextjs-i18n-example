@@ -17,7 +17,7 @@ import Title from '../../components/Title';
 import Header from '../../components/Header';
 
 const Page: NextPage = () => {
-  const { translations } = useI18n('pages/[language]/page-2');
+  const { translations } = useI18n('/pages/[language]/page-2');
   return (
     <>
       <Head>
@@ -38,16 +38,18 @@ export const getStaticPaths: GetStaticPaths = async () => ({
 export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async ({
   params,
 }) => ({
-  props: await getI18nProps({
-    language: params?.language as string,
-    paths: [
-      'pages/[language]/page-2',
-      'components/Header',
-      'components/SwitchButton',
-      'components/SwitchLink',
-      'components/Title',
-    ],
-  }),
+  props: {
+    ...await getI18nProps({
+      language: params?.language as string,
+      paths: [
+        '/pages/[language]/page-2',
+        '/components/Header',
+        '/components/SwitchButton',
+        '/components/SwitchLink',
+        '/components/Title',
+      ],
+    }),
+  },
 });
 
 export default withI18n(Page, '/page-2');

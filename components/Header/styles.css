@@ -1,8 +1,11 @@
 .header {
-  display: flex;
-  align-items: center;
-  background-color: blanchedalmond;
   overflow-x: scroll;
+  background-color: blanchedalmond;
+}
+
+.header nav {
+  align-items: center;
+  display: flex;
 }
 
 .header a {

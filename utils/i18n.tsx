@@ -53,7 +53,7 @@ export const useDynamicI18n = (path: string): {
   const { language } = React.useContext(I18nContext);
 
   const { data, error } = useSWR(
-    `/translations/${path}/${language}.json`,
+    `/translations${path}/${language}.json`,
     async (translationsPath) => (await fetch(translationsPath)).json(),
   );
 
@@ -89,7 +89,7 @@ export const withPrefetchDynamicTranslations = <Props, >(
     return (
       <>
         <Head>
-          <link rel="prefetch" href={`/translations/${path}/${language}.json`} as="fetch" crossOrigin="anonymous" />
+          <link rel="prefetch" href={`/translations${path}/${language}.json`} as="fetch" crossOrigin="anonymous" />
         </Head>
         <Component {...props} />
       </>
@@ -166,6 +166,7 @@ const loadAllTranslations = async (
         if (stats.isDirectory()) {
           await loadTranslationsFromDir(fileOrSubDir);
         } else if (stats.isFile() && (file.endsWith(`${language}.json`))) {
+          // Not sure why this isn't working
           // const module = await import(`../${fileOrSubDir}`);
           // translations[fileOrSubDir] = module.default as JsonMap;
           const data = await fs.readFile(fileOrSubDir);
@@ -197,14 +198,14 @@ export const getI18nProps = async ({
     Object.keys(fullTranslations).forEach((translationKey) => {
       translations[
         translationKey
-          .slice(translationsDir.length + 1)
+          .slice(translationsDir.length)
           .slice(0, -(language.length + '.json/'.length))
       ] = fullTranslations[translationKey];
     });
   } else {
     await Promise.all(
       paths.map(async (path) => {
-        const module = await import(`../${translationsDir}/${path}/${language}.json`);
+        const module = await import(`../${translationsDir}${path}/${language}.json`);
         translations[path] = module.default as JsonMap;
       }),
     );
@@ -217,42 +218,56 @@ export const getI18nProps = async ({
 };
 
 /*
-only works in the browser, where `window` is defined
+only works in the browser or if you pass it a pathname
 */
-export const getLanguageFromURL = (): AvailableLanguage | undefined => {
+export const getLanguageFromURL = (pathname?: string): AvailableLanguage | undefined => {
+  let finalPathname;
   if (typeof window !== 'undefined') {
-    const language = window.location.pathname.split('/')[1];
-    const isValidLanguage = (Object.keys(allLanguages) as AvailableLanguages).some(
-      (validLanugage) => validLanugage === language,
-    );
-    if (isValidLanguage) {
-      return language as AvailableLanguage;
-    }
+    finalPathname = pathname || window.location.pathname;
+  } else if (pathname) {
+    finalPathname = pathname;
+  } else {
+    return undefined;
   }
-  return undefined;
+  const language = finalPathname.split('/')[1];
+  const isValidLanguage = (Object.keys(allLanguages) as AvailableLanguages).some(
+    (validLanugage) => validLanugage === language,
+  );
+  if (isValidLanguage) {
+    return language as AvailableLanguage;
+  } else {
+    return undefined;
+  }
 };
 
 /*
-only works in the browser, where `window` is defined
+only works in the browser or if you pass it a pathname
 */
-export const getI18nAgnosticPathname = (): string | undefined => {
-  if (typeof window !== 'undefined') {
-    const { pathname } = window.location;
-    const paths = pathname.split('/');
-    const mightBePrefix = paths[1];
-
-    const allPrefixes = Object.values(allLanguages).map((lang) => lang.prefix);
-
-    const isPrefix = allPrefixes.some((prefix) => prefix === mightBePrefix);
-
-    if (isPrefix) {
-      paths.splice(1, 1);
-    }
-
-    return paths.join('/');
+export const getI18nAgnosticPathname = (pathname?: string): string | undefined => {
+  let finalPathname;
+  if (pathname === '') {
+    return '';
+  } else if (typeof window !== 'undefined') {
+    finalPathname = pathname || window.location.pathname;
+  } else if (!pathname) {
+    return undefined;
+  } else {
+    finalPathname = pathname;
   }
 
-  return undefined;
+  const paths = finalPathname.split('/');
+  const mightBePrefix = paths[1];
+
+  const allPrefixes = Object.values(allLanguages).map((lang) => lang.prefix);
+  allPrefixes.push('[language]');
+
+  const isPrefix = allPrefixes.some((prefix) => prefix === mightBePrefix);
+
+  if (isPrefix) {
+    paths.splice(1, 1);
+  }
+
+  return paths.join('/');
 };
 
 export const changeDocumentLanguage = (language: string): void => {
@@ -263,7 +278,27 @@ export const changeDocumentLanguage = (language: string): void => {
 };
 
 export const setI18nCookie = (language: string): void => {
-  document.cookie = `preferred-language=${language}`;
+  document.cookie = 'preferred-language=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  const now = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30 * 12 * 100); // 100 years
+  const date = now.toUTCString();
+  document.cookie = `preferred-language=${language}; expires=${date}`;
+};
+
+// https://stackoverflow.com/questions/5639346/what-is-the-shortest-function-for-reading-a-cookie-by-name-in-javascript
+// https://stackoverflow.com/questions/3393854/get-and-set-a-single-cookie-with-node-js-http-server
+// https://stackoverflow.com/questions/51812422/node-js-how-can-i-get-cookie-value-by-cookie-name-from-request
+// Consider using https://github.com/jshttp/cookie?
+export const getI18nCookieFromUnparsedCookieHeader = (cookieHeader: string): string | undefined => {
+  const parsedCookie: {[key: string]: string} = {};
+
+  cookieHeader && cookieHeader.split(';').forEach((cookie) => {
+    const parts = cookie.split('=');
+    if (parts.length) {
+      parsedCookie[(parts.shift() as string).trim()] = decodeURI(parts.join('='));
+    }
+  });
+
+  return parsedCookie['preferred-language'];
 };
 
 export const Link: React.FC<LinkProps> = ({
@@ -271,30 +306,14 @@ export const Link: React.FC<LinkProps> = ({
 }) => {
   const { language: contextLanguage } = React.useContext(I18nContext);
   const finalLanguage = language || contextLanguage;
-  const child = React.Children.only<typeof children>(
-    typeof children === 'string' ? <a>{children}</a> : children,
-  ) as JSX.Element;
-
-  function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    changeDocumentLanguage(finalLanguage);
-    setI18nCookie(finalLanguage);
-    if (child) {
-      if (typeof child.props.onClick === 'function') {
-        child.props.onClick(e);
-      }
-    }
-  }
-
-  const finalHref = typeof href === 'undefined' ? getI18nAgnosticPathname() || '' : href;
-
+  const finalHref = getI18nAgnosticPathname(href) || '';
   return (
     <NextLink
       href={`/[language]${finalHref}`}
       as={`/${finalLanguage}${as || finalHref}`}
-      passHref
       {...props}
     >
-      {React.cloneElement(child, { onClick })}
+      {children}
     </NextLink>
   );
 };

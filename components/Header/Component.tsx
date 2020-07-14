@@ -8,31 +8,33 @@ import { JsonMap } from '../../types/json';
 const Component: React.FC = () => {
   const {
     translations,
-  } = useI18n('components/Header');
+  } = useI18n('/components/Header');
 
   return (
-    <div className={styles.header}>
-      <Link href="">
-        <a>
-          {(translations.pages as JsonMap)['/']}
-        </a>
-      </Link>
+    <header className={styles.header}>
+      <nav>
+        <Link href="">
+          <a>
+            {(translations.pages as JsonMap)['/']}
+          </a>
+        </Link>
 
-      <Link href="/page-2">
-        <a>
-          {(translations.pages as JsonMap)['page-2']}
-        </a>
-      </Link>
+        <Link href="/page-2">
+          <a>
+            {(translations.pages as JsonMap)['page-2']}
+          </a>
+        </Link>
 
-      <Link href="/dynamic">
-        <a>
-          {(translations.pages as JsonMap).dynamic}
-        </a>
-      </Link>
+        <Link href="/dynamic">
+          <a>
+            {(translations.pages as JsonMap).dynamic}
+          </a>
+        </Link>
 
-      <SwitchButton />
-      <SwtichLink />
-    </div>
+        <SwitchButton />
+        <SwtichLink />
+      </nav>
+    </header>
   );
 };
 

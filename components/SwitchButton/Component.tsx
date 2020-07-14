@@ -10,7 +10,7 @@ import {
 const Component: React.FC = () => {
   const {
     translations, config,
-  } = useI18n('components/SwitchButton');
+  } = useI18n('/components/SwitchButton');
 
   return (
     <button

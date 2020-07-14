@@ -1,31 +1,14 @@
 import React from 'react';
 import Document, {
-  DocumentInitialProps, DocumentProps, Html, Head, Main, NextScript,
+  DocumentInitialProps, Html, Head, Main, NextScript,
 } from 'next/document';
-import i18nConfig from '../i18n.config';
-
-const { allLanguages } = i18nConfig;
-
-const getCurrentLanguage = ({ __NEXT_DATA__ }: DocumentProps): string | undefined => {
-  const { page } = __NEXT_DATA__;
-  const [, langQuery] = page.split('/');
-  const lang = Object.keys(allLanguages).find(
-    (language) => allLanguages[language].prefix === langQuery,
-  );
-
-  if (typeof lang === 'string') {
-    const language = allLanguages[lang];
-    if (language) {
-      return language.prefix;
-    }
-  }
-
-  return undefined;
-};
+import { getLanguageFromURL } from '../utils/i18n';
 
 export default class MyDocument extends Document<DocumentInitialProps> {
   render(): JSX.Element {
-    const prefix = getCurrentLanguage(this.props);
+    // eslint-disable-next-line no-underscore-dangle
+    const { page } = this.props.__NEXT_DATA__;
+    const prefix = getLanguageFromURL(page);
     return (
       <Html lang={prefix}>
         <Head />
