@@ -72,7 +72,7 @@ Is there to:
 
 1. add a `div` with a `dir` property. e.g. `rtl` and `ltr`. You should define the direction of the languages you specify in `i18n.config.ts`.
 
-2. Set the preferred-language cookie with the language found in context (Defaults to a 100 year cookie).
+2. Set the preferred-language cookie with the language found in context (Defaults to a 3 years cookie).
 
 3. Makes sure the `<html>` lang property is changed if the language changes.
 
@@ -188,13 +188,15 @@ Opposite of `changeDocumentLanguage`. Strips the language prefix from `window.lo
 
   - I was thinking of returning the translations back in the folder of their respective component. That way when you refactor your components (Move the components around your components dir), you won't have to sync the translations tree. However, one downside is that you'll have to rename all the refactored components. On the other hand, where do we keep the translations of /pages?
 
-- Using next canary release because they fixed the (bug)? where a trailing slash in the URL throws an error. To make all pages use a trailing slash, in your `next.config.js`, add:
+- Use next@^9.4.5-canary.32 if you want don't want trailing slashes to throw errors. If you want to redirect all routes to have a trailing slash by default, in `next.config.js`, add:
 
 ```js
   experimental: {
     trailingSlash: true
   }
 ```
+
+This example doesn't use it, but I tested it once and it works fine.
 
 ## SEO resources
 

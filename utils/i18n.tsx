@@ -279,7 +279,7 @@ export const changeDocumentLanguage = (language: string): void => {
 
 export const setI18nCookie = (language: string): void => {
   document.cookie = 'preferred-language=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-  const now = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30 * 12 * 100); // 100 years
+  const now = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30 * 12 * 3); // 3 years
   const date = now.toUTCString();
   document.cookie = `preferred-language=${language}; expires=${date}`;
 };
