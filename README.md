@@ -88,7 +88,7 @@ This HOC also adds an `hreflang` alternate tag given the page route, e.g.
 If you pass the page in `pages/page-2.tsx` to this HOC like this:
 
 ```TS
-export default withI18n(Page, '/page-2s');
+export default withI18n(Page, '/page-2');
 ```
 
 It will add the following links to your header.

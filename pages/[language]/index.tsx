@@ -12,6 +12,7 @@ import {
   GetI18nProps,
   GetI18nQuery,
   useI18n,
+  Translations,
 } from '../../utils/i18n';
 import Header from '../../components/Header';
 import Title from '../../components/Title';
@@ -40,16 +41,12 @@ export const getStaticPaths: GetStaticPaths = async () => ({
 export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async ({
   params,
 }) => ({
-  props: await getI18nProps(
-    params?.language,
-    [
-      'pages/[language]/index',
-      'components/Header',
-      'components/SwitchButton',
-      'components/SwitchLink',
-      'components/Title',
-    ],
-  ),
+  props: await getI18nProps({
+    language: params?.language as string,
+    // can only import node modules here and not in any other file
+    // More specifically, not outside of getStaticProps and getServerSideProps
+    fs: await (await import('fs')).promises,
+  }),
 });
 
 export default withI18n(Page, '');

@@ -12,13 +12,13 @@ const { allLanguages, defaultLanguage, domains } = config;
 type AvailableLanguages = string[];
 type AvailableLanguage = string;
 
-interface TranslationsType {
+export interface Translations {
   [key:string]: JsonMap;
 }
 
 export interface GetI18nProps {
   language: AvailableLanguage;
-  translations: TranslationsType;
+  translations: Translations;
 }
 
 export interface GetI18nQuery {
@@ -39,14 +39,14 @@ interface LinkProps extends Partial<NextLinkProps> {
 
 const I18nContext = React.createContext({
   language: defaultLanguage.prefix,
-  translations: {} as TranslationsType,
+  translations: {} as Translations,
   config: defaultLanguage,
 });
 
 export const useDynamicI18n = (path: string): {
   language: AvailableLanguage,
   config: typeof defaultLanguage,
-  translations: TranslationsType,
+  translations: Translations,
   isLoading: boolean,
   error: typeof Error,
 } => {
@@ -150,15 +150,61 @@ export function getI18nStaticPaths(): GetI18nStaticPaths[] {
   );
 }
 
-export const getI18nProps = async (
-  language: AvailableLanguage | undefined,
-  paths?: string[],
-): Promise<GetI18nProps> => {
-  const translations: TranslationsType = {};
-  if (paths) {
+const loadAllTranslations = async (
+  translationsDir: string,
+  language: string,
+  fs: any,
+): Promise<Translations> => {
+  const translations: Translations = {};
+
+  const loadTranslationsFromDir = async (dirname: string): Promise<void> => {
+    const files = await fs.readdir(dirname);
+    await Promise.all(
+      files.map(async (file: any) => {
+        const fileOrSubDir = `${dirname}/${file}`;
+        const stats = await fs.stat(fileOrSubDir);
+        if (stats.isDirectory()) {
+          await loadTranslationsFromDir(fileOrSubDir);
+        } else if (stats.isFile() && (file.endsWith(`${language}.json`))) {
+          // const module = await import(`../${fileOrSubDir}`);
+          // translations[fileOrSubDir] = module.default as JsonMap;
+          const data = await fs.readFile(fileOrSubDir);
+          const jsonModule = JSON.parse(data.toString());
+          translations[fileOrSubDir] = jsonModule;
+        }
+      }),
+    );
+  };
+  await loadTranslationsFromDir(translationsDir);
+  return translations;
+};
+
+export const getI18nProps = async ({
+  language,
+  paths,
+  translationsDir = 'public/translations',
+  fs,
+}: {
+  language: AvailableLanguage;
+  paths?: string[];
+  translationsDir?: string;
+  fs?: any
+}): Promise<GetI18nProps> => {
+  const translations: Translations = {};
+  if (!paths) {
+    // recurse over all existing translations
+    const fullTranslations = await loadAllTranslations(translationsDir, language, fs);
+    Object.keys(fullTranslations).forEach((translationKey) => {
+      translations[
+        translationKey
+          .slice(translationsDir.length + 1)
+          .slice(0, -(language.length + '.json/'.length))
+      ] = fullTranslations[translationKey];
+    });
+  } else {
     await Promise.all(
       paths.map(async (path) => {
-        const module = await import(`../public/translations/${path}/${language}.json`);
+        const module = await import(`../${translationsDir}/${path}/${language}.json`);
         translations[path] = module.default as JsonMap;
       }),
     );

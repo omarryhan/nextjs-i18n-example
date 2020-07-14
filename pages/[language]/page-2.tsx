@@ -38,16 +38,16 @@ export const getStaticPaths: GetStaticPaths = async () => ({
 export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async ({
   params,
 }) => ({
-  props: await getI18nProps(
-    params?.language,
-    [
+  props: await getI18nProps({
+    language: params?.language as string,
+    paths: [
       'pages/[language]/page-2',
       'components/Header',
       'components/SwitchButton',
       'components/SwitchLink',
       'components/Title',
     ],
-  ),
+  }),
 });
 
 export default withI18n(Page, '/page-2');
