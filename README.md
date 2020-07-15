@@ -221,4 +221,4 @@ This example doesn't use it, but I tested it once and it works fine.
 
 - Vinissimus in [next-translate](https://github.com/vinissimus/next-translate)
 - Janus Reith in [i18n example](https://codesandbox.io/s/nextjs-i18n-staticprops-new-ouyrb)
-- fwojciec in [simple-i18n-example](https://github.com/fwojciec/simple-i18n-example)
+- Filip Wojciechowski in [simple-i18n-example](https://github.com/fwojciec/simple-i18n-example)
