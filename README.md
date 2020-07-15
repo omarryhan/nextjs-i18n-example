@@ -11,7 +11,7 @@
 - SEO as a top priority
 
   - Adds hreflang tags for you
-  - Sets HTML lang attribute for you
+  - Sets HTML lang attribute for you on both the server and client.
 
 - Doesn't block Next.js Automatic Static Optimizations.
 
@@ -23,13 +23,19 @@
 
 - Dynamic translations are cahched using a stale while revlidate cache strategy (using Vercel's [SWR lib](https://github.com/vercel/swr)), so that only the first load will result in a delay.
 
-## Don't use if
+- Automatic language detection
 
-- You don't want to maintain the all the i18n logic yourself.
+- Save user's preferred language in a cookie on every language transition.
 
-- Don't want to write a lot of boilerplate
+- No heavy I18n lib dependency e.g. i18next.
 
-- You don't want to use HTTP subdirectory based i18n. e.g. `https://example.com/en/about`, and want to use a subdomain or TLD based i18n strategy.
+## Don't use if you
+
+- Don't want to maintain the all the i18n logic yourself.
+
+- Don't want to write a fair amount of boilerplate
+
+- Don't want to use HTTP subdirectory based i18n. e.g. `https://example.com/en/about`, and want to use a subdomain or TLD based i18n strategy instead.
 
 ## Files
 
