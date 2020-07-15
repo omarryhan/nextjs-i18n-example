@@ -33,7 +33,9 @@ const Page: NextPage = () => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => ({
-  paths: getI18nStaticPaths(),
+  paths: [
+    ...getI18nStaticPaths(),
+  ],
   fallback: false,
 });
 
@@ -43,14 +45,7 @@ export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async 
   props: {
     ...await getI18nProps({
       language: params?.language as string,
-      paths: [
-        '/pages/[language]/dynamic',
-        '/components/Header',
-        '/components/SwitchButton',
-        '/components/SwitchLink',
-        '/components/Title',
-        '/components/DynamicTranslations',
-      ],
+      fs: (await import('fs')).promises,
     }),
   },
 });

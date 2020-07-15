@@ -3,6 +3,7 @@ import {
   NextPage,
   GetStaticPaths,
   GetStaticProps,
+  GetServerSideProps,
 } from 'next';
 import Head from 'next/head';
 import {
@@ -17,7 +18,7 @@ import Title from '../../components/Title';
 import Header from '../../components/Header';
 
 const Page: NextPage = () => {
-  const { translations } = useI18n('/pages/[language]/page-2');
+  const { translations } = useI18n('/pages/[language]/ssr');
   return (
     <>
       <Head>
@@ -30,19 +31,14 @@ const Page: NextPage = () => {
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => ({
-  paths: getI18nStaticPaths(),
-  fallback: false,
-});
-
-export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async ({
+export const getServerSideProps: GetServerSideProps<GetI18nProps, GetI18nQuery> = async ({
   params,
 }) => ({
   props: {
     ...await getI18nProps({
       language: params?.language as string,
       paths: [
-        '/pages/[language]/page-2',
+        '/pages/[language]/ssr',
         '/components/Header',
         '/components/SwitchButton',
         '/components/SwitchLink',
@@ -52,4 +48,4 @@ export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async 
   },
 });
 
-export default withI18n(Page, '/page-2');
+export default withI18n(Page, '/ssr');

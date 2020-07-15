@@ -33,7 +33,9 @@ const Page: NextPage = () => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => ({
-  paths: getI18nStaticPaths(),
+  paths: [
+    ...getI18nStaticPaths(),
+  ],
   fallback: false,
 });
 

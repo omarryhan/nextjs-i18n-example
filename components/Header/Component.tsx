@@ -19,9 +19,9 @@ const Component: React.FC = () => {
           </a>
         </Link>
 
-        <Link href="/page-2">
+        <Link href="/ssr">
           <a>
-            {(translations.pages as JsonMap)['page-2']}
+            {(translations.pages as JsonMap).ssr}
           </a>
         </Link>
 
