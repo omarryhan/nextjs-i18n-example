@@ -108,11 +108,15 @@ There are two main ways you can load translations:
 
 1. Specify the paths you want to load like in: `pages/dynamic.tsx` and `pages/ssr.tsx` by passing an array of strings as the `paths` parameter (More performant, but a bit annoying)
 
-2. Pass Node's fs module to `getI18nProps` for it to use to recurse over all the translations in the `tranlationsDir` you specify. (Less performant, but way less annoying). The reason we're doing dependency injection here, is getI18nProps is the only place you can import node modules as opposed to browser supported modules. `utils/i18n.ts` will be shipped to the browser, while `getStaticProps` and `getServerSideProps` are guaranteed to not ship to the browser.
+2. Pass Node's fs module to `getI18nProps` for it to use to recurse over all the translations in the `tranlationsDir` you specify. (Less performant, but way less annoying). The reason we're doing a dependency injection here, is because `getI18nProps` is the only place you can import node modules as opposed to browser supported modules. `utils/i18n.ts` will be shipped to the browser, while `getStaticProps` and `getServerSideProps` are guaranteed to not ship to the browser.
 
-Personally, I find that the convenience of method no.2 overweighs the performance gains from method no.1. I recommend starting with method no.2. If after a while, using method 2 starts becoming a performance bottleneck, switch to method no.1, easy peasy.
+Personally, I find that the convenience of method no.2 overweighs the performance gains from method no.1 when starting. But as your project gets bigger, you'll eventually need to specify which translation files to load. I recommend starting with method no.2. If after a while, using method 2 starts to seriously degrade your app's performance and load times, switch to method no.1, easy peasy.
 
-Also, it doesn't make sense to manually specify `paths` in: `getStaticProps` because it's only ran once when you're building the project. The tradeoff I was talking about above only applies to pages that use `getServerSideProps`. **For `getStaticProps`, you should always use method #2.**
+The two main ineffeciencies caused by passing node's fs module (i.e. loading all the translations are):
+
+- Bundle size and the size of XHR payloads from calling `getServerSideProps` when doing page transitions on the client.
+
+- Response latency because of the IO time needed to load all the translations. If I'm going to take a wild guess, this latency is probably negligible, especially if you're hosting witha hosting provider that uses SSD (most popular ones do).
 
 #### `withI18n`
 
