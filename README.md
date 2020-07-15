@@ -114,7 +114,7 @@ Personally, I find that the convenience of method no.2 overweighs the performanc
 
 The two main ineffeciencies caused by passing node's fs module (i.e. loading **all** the translations, instead of only the ones your page is going to use):
 
-- Needlessly bigger bundle size and bigger size of XHR payloads from calling `getServerSideProps` when doing page transitions on the client.
+- Needlessly bigger bundle size **&** bigger size of XHR payloads from calling `getServerSideProps` and `getStaticProps` when doing page transitions on the client. At first, I thought that `getStaticProps` is never called from the browser. But turns out, it gets called just like `getServerSideProps`. The only difference is, `getServerSideProps` runs a function on every call, while `getStaticProps`, returns a static response that is guaranteed to stay the same. That means that, it's only ever called once on each browsing session.
 
 - Response latency because of the IO time needed to load all the translations. If I'm going to take a wild guess, this latency is probably negligible, especially if you're hosting with a hosting provider that uses SSD (most popular ones do). It can be useful to cache them in memory though.
 
