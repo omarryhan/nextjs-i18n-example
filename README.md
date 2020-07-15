@@ -116,7 +116,7 @@ The two main ineffeciencies caused by passing node's fs module (i.e. loading all
 
 - Bundle size and the size of XHR payloads from calling `getServerSideProps` when doing page transitions on the client.
 
-- Response latency because of the IO time needed to load all the translations. If I'm going to take a wild guess, this latency is probably negligible, especially if you're hosting witha hosting provider that uses SSD (most popular ones do).
+- Response latency because of the IO time needed to load all the translations. If I'm going to take a wild guess, this latency is probably negligible, especially if you're hosting witha hosting provider that uses SSD (most popular ones do). It's probably best to memoize all the translations being loaded from the file system. PRs are welcome :)
 
 #### `withI18n`
 
