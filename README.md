@@ -192,7 +192,7 @@ Opposite of `changeDocumentLanguage`. Strips the language prefix from `window.lo
 
 3. If we solve point #2, we can automatically detect the user's preferred language on the browser using the browser's `navigator.languages`. If you want a full static website, you can use this `navigator.languages` API in the `pages/index.tsx` page instead of the language detection logic in `pages/index.tsx::getServerSideProps`.
 
-## Notes
+## Misc. notes
 
 - At first, I tried to store all the translations, in the directory of their respective component, instead of the current approach (which is having an identical component and pages tree in the `/public` directory). I was also dynamically importing all translations. I switched to the current approach because:
 
