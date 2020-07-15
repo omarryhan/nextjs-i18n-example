@@ -2,7 +2,7 @@
 
 ## Features
 
-- In the spirit of React, instead of declaring all translations in a global `locales` folder, each component and page has its own set of translations. Each translation dir is placed under: `/public/translations/` by default. That way, translations for `components/Title` component, are found under: `/public/translations/components/Title`, and for `components/Nested/NestedComponent` are found under `/public/translations/Nested/NestedComponent` and `pages/[language]/ssr` are found under `public/translations/pages/[language]/ssr`
+- In the spirit of React, instead of declaring all translations in a global `locales` folder, each component and page has its own set of translations. Each translation dir is placed under: `/public/translations/` by default. That way, translations for `components/Title` component, are found under: `/public/translations/components/Title`, and for `components/Nested/NestedComponent` are found under `/public/translations/Nested/NestedComponent` and `pages/[language]/ssr` are found under `public/translations/pages/[language]/ssr`.
 
 - SEO as a top priority
 
