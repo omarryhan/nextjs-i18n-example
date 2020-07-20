@@ -54,7 +54,7 @@ export const useDynamicI18n = (path: string): {
 
   const { data, error } = useSWR(
     `/translations${path}/${language}.json`,
-    async (translationsPath) => (await fetch(translationsPath)).json(),
+    async (TranslationsNeeded) => (await fetch(TranslationsNeeded)).json(),
   );
 
   return {
@@ -203,8 +203,9 @@ export const getI18nProps = async ({
       ] = fullTranslations[translationKey];
     });
   } else {
+    const unqiquePaths = [...Array.from(new Set(paths))];
     await Promise.all(
-      paths.map(async (path) => {
+      unqiquePaths.map(async (path) => {
         const module = await import(`../${translationsDir}${path}/${language}.json`);
         translations[path] = module.default as JsonMap;
       }),

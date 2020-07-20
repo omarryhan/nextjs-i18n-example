@@ -22,7 +22,7 @@
     "lint:fix": "echo \" \n\nlinting all JS and TS files.\n\n\" && npm run lint:ts:fix ; echo \"\n\nLinting CSS.\n\n\" && npm run lint:css",
     "lint:ts": "eslint ./**/*.{js,jsx,tsx,ts,css}",
     "lint:ts:fix": "eslint ./**/*.{js,jsx,tsx,ts,css} --fix",
-    "lint:css": "stylelint ./**/*.{js,jsx,tsx,ts}",
+    "lint:css": "stylelint ./**/*.css",
     "tsc": "tsc .",
     "test": "jest",
     "test:init": "jest --init",

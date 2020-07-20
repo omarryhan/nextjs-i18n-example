@@ -1,14 +1,16 @@
 import React from 'react';
 import styles from './styles.css';
-import SwitchButton from '../SwitchButton';
-import SwtichLink from '../SwitchLink';
+import SwitchButton, { AllTranslationsNeeded as SwitchButtonAllTranslationsNeeded } from '../SwitchButton';
+import SwtichLink, { AllTranslationsNeeded as SwitchLinkAllTranslationsNeeded } from '../SwitchLink';
 import { useI18n, Link } from '../../utils/i18n';
 import { JsonMap } from '../../types/json';
+
+const TranslationsNeeded = '/components/Header';
 
 const Component: React.FC = () => {
   const {
     translations,
-  } = useI18n('/components/Header');
+  } = useI18n(TranslationsNeeded);
 
   return (
     <header className={styles.header}>
@@ -37,5 +39,11 @@ const Component: React.FC = () => {
     </header>
   );
 };
+
+export const AllTranslationsNeeded: string[] = [
+  TranslationsNeeded,
+  ...SwitchButtonAllTranslationsNeeded,
+  ...SwitchLinkAllTranslationsNeeded,
+];
 
 export default Component;

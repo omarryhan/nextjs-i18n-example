@@ -1,10 +1,12 @@
 import React from 'react';
 import { useI18n } from '../../utils/i18n';
 
+const TranslationsNeeded = '/components/Title';
+
 const Component: React.FC<{title: string}> = ({ title }) => {
   const {
     language, translations, config,
-  } = useI18n('/components/Title');
+  } = useI18n(TranslationsNeeded);
 
   return (
     <div style={{ padding: '10px 10px' }}>
@@ -26,5 +28,9 @@ const Component: React.FC<{title: string}> = ({ title }) => {
     </div>
   );
 };
+
+export const AllTranslationsNeeded: string[] = [
+  TranslationsNeeded,
+];
 
 export default Component;

@@ -13,12 +13,14 @@ import {
   GetI18nQuery,
   useI18n,
 } from '../../utils/i18n';
-import DynamicTranslations from '../../components/DynamicTranslations';
-import Header from '../../components/Header';
-import Title from '../../components/Title';
+import DynamicTranslations, { AllTranslationsNeeded as DynamicTranslationsAllTranslationsNeeded } from '../../components/DynamicTranslations';
+import Header, { AllTranslationsNeeded as HeaderAllTranslationsNeeded } from '../../components/Header';
+import Title, { AllTranslationsNeeded as TitleAllTranslationsNeeded } from '../../components/Title';
+
+const TranslationsNeeded = '/pages/[language]/dynamic';
 
 const Page: NextPage = () => {
-  const { translations } = useI18n('/pages/[language]/dynamic');
+  const { translations } = useI18n(TranslationsNeeded);
   return (
     <>
       <Head>
@@ -45,7 +47,12 @@ export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async 
   props: {
     ...await getI18nProps({
       language: params?.language as string,
-      fs: (await import('fs')).promises,
+      paths: [
+        TranslationsNeeded,
+        ...DynamicTranslationsAllTranslationsNeeded,
+        ...HeaderAllTranslationsNeeded,
+        ...TitleAllTranslationsNeeded,
+      ],
     }),
   },
 });

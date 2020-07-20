@@ -5,10 +5,12 @@ import {
   useI18n, Link,
 } from '../../utils/i18n';
 
+const TranslationsNeeded = '/components/SwitchLink';
+
 const Component: React.FC = () => {
   const {
     translations, config,
-  } = useI18n('/components/SwitchLink');
+  } = useI18n(TranslationsNeeded);
 
   const router = useRouter();
 
@@ -20,5 +22,9 @@ const Component: React.FC = () => {
     </Link>
   );
 };
+
+export const AllTranslationsNeeded: string[] = [
+  TranslationsNeeded,
+];
 
 export default Component;

@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDynamicI18n, withPrefetchDynamicTranslations } from '../../utils/i18n';
 
-const TranslationsPath = '/components/DynamicTranslations';
+const TranslationsNeeded = '/components/DynamicTranslations';
 
 const Component: React.FC = () => {
   const {
     translations, isLoading, error,
-  } = useDynamicI18n(TranslationsPath);
+  } = useDynamicI18n(TranslationsNeeded);
 
   if (error) {
     return (
@@ -31,4 +31,8 @@ const Component: React.FC = () => {
   );
 };
 
-export default withPrefetchDynamicTranslations(Component, TranslationsPath);
+export const AllTranslationsNeeded: string[] = [
+  TranslationsNeeded,
+];
+
+export default withPrefetchDynamicTranslations(Component, TranslationsNeeded);

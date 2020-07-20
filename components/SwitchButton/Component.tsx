@@ -7,10 +7,12 @@ import {
   changeDocumentLanguage,
 } from '../../utils/i18n';
 
+const TranslationsNeeded = '/components/SwitchButton';
+
 const Component: React.FC = () => {
   const {
     translations, config,
-  } = useI18n('/components/SwitchButton');
+  } = useI18n(TranslationsNeeded);
 
   return (
     <button
@@ -27,5 +29,9 @@ const Component: React.FC = () => {
     </button>
   );
 };
+
+export const AllTranslationsNeeded: string[] = [
+  TranslationsNeeded,
+];
 
 export default Component;
