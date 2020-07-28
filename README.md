@@ -194,6 +194,12 @@ Strips the language directory prefix from `window.location.pathname` or any path
 
 Opposite of `changeDocumentLanguage`. Strips the language prefix from `window.location.pathname` or any pathname you pass it and returns it. You can skip passing a pathname on the browser.
 
+## More
+
+- If you want to load translation files while prerendering in `_app.ts`, you must implement the `404.ts` page.
+
+- One translations structure that I've come to like more than the current structure is keeping the translations in a `translations` dir inside of each component. And for pages keeping the translations under a `pagesTranslations` dir on the same level as the `pages` dir. I'm too lazy to change the code again to reflect this preference. One downside is that it makes your translations not publicly accessible because they will no longer live in the `public` dir.
+
 ## Pain points
 
 1. It's quite cumbersome to list the names of the translations needed for each page. Since all pages already knows which components they will mount, we should expect them to know which translations to load without needing to specify them. A workaround is passing Node's fs module, to load all the translations, but this can be a bit inefficient for `getServerSideProps`.
