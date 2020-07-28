@@ -278,6 +278,13 @@ export const changeDocumentLanguage = (language: string): void => {
   }
 };
 
+export const changeDocumentDirection = (direction: string): void => {
+  if (typeof window !== 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    window.document.querySelector('html')!.dir = direction;
+  }
+};
+
 export const setI18nCookie = (language: string): void => {
   document.cookie = 'preferred-language=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   const now = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30 * 12 * 3); // 3 years
