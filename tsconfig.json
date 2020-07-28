@@ -3,8 +3,7 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
-    "**/*.jsx",
-    ".eslintrc.js"
+    "**/*.jsx"
   ],
   "exclude": [
     "node_modules",

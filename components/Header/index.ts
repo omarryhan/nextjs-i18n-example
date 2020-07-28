@@ -1,4 +1,5 @@
-import Component, { AllTranslationsNeeded as t } from './Component';
+import Component from './Component';
 
-export const AllTranslationsNeeded = t;
+export * from './Component';
+
 export default Component;
