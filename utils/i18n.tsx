@@ -124,8 +124,13 @@ const HrefAlternateHeadTags: React.FC<{pathname: string}> = ({ pathname }) => {
 /*
   pageRoute is used to add the href alternate head tags link. Optional
 */
-export const withI18n = (Page: NextPage, pageRoute?: string): NextPage<GetI18nProps> => {
-  const WithI18nProvider: NextPage<GetI18nProps> = ({ language, translations, ...props }) => (
+// eslint-disable-next-line @typescript-eslint/ban-types
+export const withI18n = <P extends {}>(
+  Page: NextPage<P>, pageRoute?: string,
+): NextPage<GetI18nProps & P> => {
+  const WithI18nProvider: NextPage<GetI18nProps & P> = (
+    { language, translations, ...props },
+  ) => (
     <I18nContext.Provider value={{
       language,
       translations,
@@ -133,10 +138,11 @@ export const withI18n = (Page: NextPage, pageRoute?: string): NextPage<GetI18nPr
     }}
     >
       {
-        typeof pageRoute !== 'undefined' && (
+        typeof pageRoute === 'undefined' ? null : (
           <HrefAlternateHeadTags pathname={pageRoute} />
         )
       }
+      {/* @ts-expect-error */}
       <Page {...props} />
     </I18nContext.Provider>
   );

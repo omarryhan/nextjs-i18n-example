@@ -16,6 +16,9 @@ import {
 import Header from '../../components/Header';
 import Title from '../../components/Title';
 import RosettaImage from '../../components/RosettaImage';
+import i18nConfig from '../../i18n.config';
+
+const { domains } = i18nConfig;
 
 const Page: NextPage = () => {
   const { translations } = useI18n('/pages/[language]/index');
@@ -24,6 +27,7 @@ const Page: NextPage = () => {
       <Head>
         <meta name="title" content={translations.title as string} />
         <title>{translations.title}</title>
+        <link rel="alternate" href={process.env.NODE_ENV === 'production' ? domains.production : domains.development} hrefLang="x-default" />
       </Head>
       <Header />
       <Title title={translations.title as string} />
