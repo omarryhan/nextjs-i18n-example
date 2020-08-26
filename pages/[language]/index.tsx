@@ -13,15 +13,17 @@ import {
   GetI18nQuery,
   useI18n,
 } from '../../utils/i18n';
-import Header from '../../components/Header';
-import Title from '../../components/Title';
-import RosettaImage from '../../components/RosettaImage';
+import Header, { AllTranslationsNeeded as HeaderTranslations } from '../../components/Header';
+import Title, { AllTranslationsNeeded as TitleTranslations } from '../../components/Title';
+import RosettaImage, { AllTranslationsNeeded as RosettaTranslations } from '../../components/RosettaImage';
 import i18nConfig from '../../i18n.config';
 
 const { domains } = i18nConfig;
 
+const TranslationsNeeded = '/pages/[language]/index';
+
 const Page: NextPage = () => {
-  const { translations } = useI18n('/pages/[language]/index');
+  const { translations } = useI18n(TranslationsNeeded);
   return (
     <>
       <Head>
@@ -49,10 +51,12 @@ export const getStaticProps: GetStaticProps<GetI18nProps, GetI18nQuery> = async 
   props: {
     ...await getI18nProps({
       language: params?.language as string,
-      // The reason we're importing here, is because we can only
-      // import node modules here and not in any other file.
-      // More specifically, not outside of getStaticProps and getServerSideProps
-      fs: (await import('fs')).promises, // pass it to import all the translations
+      paths: [
+        TranslationsNeeded,
+        ...HeaderTranslations,
+        ...TitleTranslations,
+        ...RosettaTranslations,
+      ],
     }),
   },
 });

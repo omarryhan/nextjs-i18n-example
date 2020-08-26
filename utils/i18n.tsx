@@ -156,67 +156,26 @@ export function getI18nStaticPaths(): GetI18nStaticPaths[] {
   );
 }
 
-const loadAllTranslations = async (
-  translationsDir: string,
-  language: string,
-  fs: any,
-): Promise<Translations> => {
-  const translations: Translations = {};
-
-  const loadTranslationsFromDir = async (dirname: string): Promise<void> => {
-    const files = await fs.readdir(dirname);
-    await Promise.all(
-      files.map(async (file: any) => {
-        const fileOrSubDir = `${dirname}/${file}`;
-        const stats = await fs.stat(fileOrSubDir);
-        if (stats.isDirectory()) {
-          await loadTranslationsFromDir(fileOrSubDir);
-        } else if (stats.isFile() && (file.endsWith(`${language}.json`))) {
-          // Not sure why this isn't working
-          // const module = await import(`../${fileOrSubDir}`);
-          // translations[fileOrSubDir] = module.default as JsonMap;
-          const data = await fs.readFile(fileOrSubDir);
-          const jsonModule = JSON.parse(data.toString());
-          translations[fileOrSubDir] = jsonModule;
-        }
-      }),
-    );
-  };
-  await loadTranslationsFromDir(translationsDir);
-  return translations;
-};
-
 export const getI18nProps = async ({
   language,
-  paths,
+  paths = [],
   translationsDir = 'public/translations',
-  fs,
 }: {
   language: AvailableLanguage;
   paths?: string[];
   translationsDir?: string;
-  fs?: any
 }): Promise<GetI18nProps> => {
+  // Always load the app's translations
+  // This requires that all pages use this function
   const translations: Translations = {};
-  if (!paths) {
-    // recurse over all existing translations
-    const fullTranslations = await loadAllTranslations(translationsDir, language, fs);
-    Object.keys(fullTranslations).forEach((translationKey) => {
-      translations[
-        translationKey
-          .slice(translationsDir.length)
-          .slice(0, -(language.length + '.json/'.length))
-      ] = fullTranslations[translationKey];
-    });
-  } else {
-    const unqiquePaths = [...Array.from(new Set(paths))];
-    await Promise.all(
-      unqiquePaths.map(async (path) => {
-        const module = await import(`../${translationsDir}${path}/${language}.json`);
-        translations[path] = module.default as JsonMap;
-      }),
-    );
-  }
+  paths.push('/pages/_app');
+  const unqiquePaths = [...Array.from(new Set(paths))];
+  await Promise.all(
+    unqiquePaths.map(async (path) => {
+      const module = await import(`../${translationsDir}${path}/${language}.json`);
+      translations[path] = module.default as JsonMap;
+    }),
+  );
 
   return ({
     language: language || defaultLanguage.prefix,

@@ -4,11 +4,20 @@ import Head from 'next/head';
 import App, { AppInitialProps } from 'next/app';
 import '../components/global-styles.css';
 import i18nConfig from '../i18n.config';
-import { changeDocumentLanguage, setI18nCookie, changeDocumentDirection } from '../utils/i18n';
+import {
+  changeDocumentLanguage, setI18nCookie, changeDocumentDirection,
+} from '../utils/i18n';
+import { JsonMap } from '../types/json';
 
 const { allLanguages, defaultLanguage } = i18nConfig;
 
-class MyApp extends App<AppInitialProps> {
+interface I18nProps {
+  translations: JsonMap
+}
+
+const TranslationsNeeded = '/pages/_app';
+
+class MyApp extends App<AppInitialProps & I18nProps> {
   componentDidMount(): void {
     const {
       pageProps,
@@ -35,6 +44,7 @@ class MyApp extends App<AppInitialProps> {
     } = this.props;
 
     const { language } = pageProps;
+    const translations = pageProps.translations[TranslationsNeeded];
     const languageObject = allLanguages[language as string] || defaultLanguage;
     const direction = languageObject.direction || 'ltr';
 
@@ -44,6 +54,14 @@ class MyApp extends App<AppInitialProps> {
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
+          <meta name="title" content={translations.title as string} />
+          {/*
+            Here you can add a custom manifest for your language e.g.
+            <link rel="manifest" href={`/${translations.manifest}.json`} />
+            `translations.manfifest` being the path to the particular manifest. e.g. manifest_ar
+
+            You can also add custom keyword tags, description, etc.
+          */}
         </Head>
         <div
           dir={direction}
