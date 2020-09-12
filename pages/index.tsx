@@ -14,11 +14,7 @@ const Component: React.FC<GetI18nProps> = ({ language }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <Head>
-      <meta name="robots" content="noindex, nofollow" />
-    </Head>
-  );
+  return null;
 };
 
 export const getServerSideProps: GetServerSideProps<GetI18nProps> = async ({ req, res }) => {
