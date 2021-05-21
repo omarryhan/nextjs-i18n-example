@@ -5,7 +5,7 @@ const TranslationsNeeded = '/components/DynamicTranslations';
 
 const Component: React.FC = () => {
   const {
-    translations, isLoading, error,
+    translations, isLoading, error, language,
   } = useDynamicI18n(TranslationsNeeded);
 
   if (error) {
@@ -16,10 +16,10 @@ const Component: React.FC = () => {
     );
   }
 
-  if (isLoading) {
+  if (!isLoading) {
     return (
       <h1>
-        Loading translations...
+        {language === 'en' ? 'Loading translations...' : 'جاري التحميل...'}
       </h1>
     );
   }
