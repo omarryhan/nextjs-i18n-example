@@ -16,7 +16,7 @@ const Component: React.FC = () => {
     );
   }
 
-  if (!isLoading) {
+  if (isLoading) {
     return (
       <h1>
         {language === 'en' ? 'Loading translations...' : 'جاري التحميل...'}
